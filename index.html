@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PR'IMMO · Biens professionnels</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: sobre, posé, professionnel — une agence qui présente ses dossiers
+   IDEA: la fiche commerciale PR'IMMO — bandeau encre, réf. dorée, chiffres clés en tuiles
+   PICTURE: pile de photos de biens avec une mini-fiche posée dessus
+   COLOUR and TYPE: crème papier, encre, or (charte des fiches) ; Lora + Inter
+   LAYOUT: en-tête, hero, catalogue filtrable, off-market, agence, contact, pied */
+:root{color-scheme:light dark;
+--bg:light-dark(#f6f1e7,#121318);--paper:light-dark(#fffdf8,#1b1d24);--ink:light-dark(#16181f,#efe9dc);
+--soft:light-dark(#5d5a52,#b3ad9f);--line:light-dark(#e2d9c6,#2c2e37);--gold:#b08d4a;--gold2:light-dark(#8a6a2f,#d4b373);
+--deep:#16181f;--deepink:#efe9dc;--shadow:0 18px 40px -22px rgba(20,18,10,.45)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:Lora,Georgia,serif;font-weight:600;line-height:1.08;margin:0;text-wrap:balance}
+h1{font-size:clamp(34px,5vw,52px)}h2{font-size:clamp(28px,3.6vw,40px)}h3{font-size:20px}
+a{color:inherit}
+.wrap{max-width:1240px;margin:0 auto}
+.band{padding:clamp(40px,6vw,88px) max(5vw,16px)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 20px;border-radius:999px;border:1px solid var(--ink);background:var(--ink);color:var(--bg);font:600 15px Inter,sans-serif;text-decoration:none;cursor:pointer;transition:transform .25s,background .25s,color .25s}
+.btn:hover{transform:translateY(-2px)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:#16181f}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+/* header */
+header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:24px;padding:12px max(5vw,16px);max-width:1240px;margin:0 auto}
+.logo{text-decoration:none;line-height:1.1}
+.logo b{font:600 24px Lora,serif;letter-spacing:.02em}
+.logo small{display:block;font-size:11.5px;color:var(--gold2)}
+.nav nav{display:flex;gap:22px;margin-left:auto}
+.nav nav a{text-decoration:none;font-size:15px;color:var(--soft);transition:color .2s}
+.nav nav a:hover{color:var(--ink)}
+@media(max-width:820px){.nav nav{display:none}.nav .btn{margin-left:auto}}
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(28px,5vw,64px);align-items:center}
+.hero p.lead{font-size:18px;color:var(--soft);max-width:34em;margin:20px 0 28px}
+.hero .ctas{display:flex;flex-wrap:wrap;gap:12px}
+.facts{display:flex;flex-wrap:wrap;gap:28px;margin-top:36px;padding-top:24px;border-top:1px solid var(--line)}
+.facts div{font-size:13.5px;color:var(--soft)}
+.facts strong{display:block;font:600 30px Lora,serif;color:var(--ink);white-space:nowrap}
+.stack-pics{position:relative;aspect-ratio:5/4.2}
+.stack-pics figure{position:absolute;margin:0;overflow:hidden;border-radius:6px;box-shadow:var(--shadow);background:#16181f}
+.stack-pics svg,.stack-pics img{width:100%;height:100%;object-fit:cover;display:block}
+.p1{inset:0 14% 22% 0}.p1 img{animation:kb 18s ease-in-out infinite alternate}
+.p2{width:42%;height:38%;right:0;top:8%;border:6px solid var(--paper)}
+.p3{width:40%;height:34%;right:4%;bottom:0;border:6px solid var(--paper)}
+.mini{position:absolute;left:4%;bottom:2%;width:min(52%,310px);background:var(--deep);color:var(--deepink);border-radius:6px;padding:16px 18px;box-shadow:var(--shadow)}
+.mini .r{display:flex;justify-content:space-between;font-size:12.5px;color:#d4b373}
+.mini .r span:last-child{background:var(--gold);color:#16181f;padding:2px 9px;border-radius:3px;font-weight:600}
+.mini h3{font-size:19px;margin:8px 0 10px;color:var(--deepink)}
+.mini .t{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.mini .t div{border:1px solid #3a3b44;border-radius:4px;padding:6px 7px;font-size:11.5px;color:#b3ad9f;line-height:1.3}
+.mini .t b{display:block;color:var(--deepink);font:600 15px Lora,serif;white-space:nowrap}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.08) translate(-1.5%,-1%)}}
+@media(max-width:860px){.hero{grid-template-columns:1fr}.stack-pics{max-width:620px}}
+@media(max-width:600px){.mimg{aspect-ratio:4/3}.mini .t{display:none}.mini{width:60%;padding:12px 14px}.mini h3{font-size:16px;margin-bottom:0}.facts{gap:18px 24px}.facts strong{font-size:24px}.logo small{display:none}.nav .btn{min-height:40px;padding:0 14px;font-size:14px;white-space:nowrap}.tools,.tools input,.tools select,.seg{width:100%}.seg button{flex:1}}
+/* 3D */
+.v3{position:relative;width:100%;height:100%;background:linear-gradient(180deg,#eeece6,#d5d0c5)}
+.v3 canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.v3 .pd{position:absolute;right:10px;bottom:10px;background:rgba(22,24,31,.86);color:#efe9dc;font:600 11px/1 Inter,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:7px 10px;border-radius:999px}
+.v3.live{cursor:grab;touch-action:pan-y}.v3.live:active{cursor:grabbing}
+.v3 .pb{position:absolute;top:14px;left:14px;background:#16181f;color:#efe9dc;font:600 12px/1 Inter,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:9px 13px;border-radius:999px}
+.v3 .hint{position:absolute;left:14px;bottom:14px;font:13px/1 Inter,system-ui,sans-serif;color:#4a4840}
+.v3 .pl,.v3 .zm button{border:1px solid rgba(0,0,0,.12);background:#fffdf8;color:#16181f;border-radius:999px;width:44px;height:44px;cursor:pointer;font-size:15px}
+.v3 .pl{position:absolute;right:12px;bottom:12px}.v3 .zm{position:absolute;right:12px;top:12px;display:flex;flex-direction:column;gap:6px}
+.v3bar{padding:14px clamp(16px,3vw,28px) 0}.seg2,.lv{display:flex;flex-wrap:wrap;gap:8px}.lv[hidden]{display:none}.lv{margin-top:10px}
+.seg2 button,.lv button{min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font:500 14px/1 Inter,system-ui,sans-serif;cursor:pointer}
+.seg2 button[aria-pressed=true],.lv button[aria-pressed=true]{background:var(--deep);color:var(--deepink);border-color:var(--deep)}
+.lvt{margin:12px 0 0;color:var(--soft)}
+.v3n{margin:0;padding:10px clamp(16px,3vw,28px);font-size:13px;color:var(--soft);border-bottom:1px solid var(--line)}
+.urb{border:1px solid var(--gold);border-radius:8px;padding:14px 16px;margin:0 0 16px}.urb b{display:block}.urb .cd{display:inline-block;margin-top:6px;font-weight:600;color:var(--gold2)}.urb p{margin:8px 0 0;font-size:14px;color:var(--soft)}
+.v3 .pd{white-space:nowrap}.stack-pics .v3 .pd{font-size:9px;padding:5px 8px;right:6px;bottom:6px}
+@media(max-width:600px){.mimg:has(.zm){aspect-ratio:1}}
+.rng{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;font-weight:500}.rng input{flex:1;min-width:180px;accent-color:#b08d4a;height:44px}
+.calc{padding:20px clamp(16px,3vw,28px) 26px;border-top:1px solid var(--line)}.calc .sm{font-size:13px;color:var(--soft);margin:4px 0 14px}
+.cg{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.cg label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--soft)}
+.cg input{font:16px/1.2 Inter,system-ui,sans-serif;padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);text-align:right}
+.co{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:14px}.co div{background:var(--bg);border-radius:8px;padding:12px 14px}.co span{display:block;font-size:12px;color:var(--soft)}.co b{display:block;font-size:18px;margin-top:4px;white-space:nowrap}.co .neg b{color:#b4412f}
+/* catalogue */
+.cat-head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:20px;margin-bottom:28px}
+.cat-head p{color:var(--soft);margin:10px 0 0;max-width:40em}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.seg{display:flex;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:4px}
+.seg button{border:0;background:none;color:var(--soft);font:500 15px Inter,sans-serif;min-height:38px;padding:0 16px;border-radius:999px;cursor:pointer;transition:background .25s,color .25s}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+input,select,textarea{font:16px Inter,sans-serif;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:11px 14px;min-height:46px;width:100%}
+.tools input{width:200px;border-radius:999px}.tools select{width:auto;border-radius:999px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr));gap:22px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:8px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;text-align:left;padding:0;font:inherit;color:inherit;transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s}
+.card:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+.card .ph{position:relative;aspect-ratio:16/10;overflow:hidden;background:var(--deep)}
+.card .ph img,.card .ph svg{width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.card:hover .ph img,.card:hover .ph svg{transform:scale(1.06)}
+.tag{position:absolute;top:12px;left:12px;display:flex;gap:6px}
+.tag span{border:1px solid rgba(239,233,220,.35);background:var(--deep);color:var(--deepink);font-size:12.5px;font-weight:600;padding:4px 10px;border-radius:3px}
+.tag span.s{background:var(--gold);color:#16181f}
+.card .bd{padding:18px 20px 20px;display:flex;flex-direction:column;gap:6px;flex:1}
+.card .loc{font-size:13.5px;color:var(--gold2);font-weight:500}
+.card .kv{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:8px;font-size:14px;color:var(--soft)}
+.card .kv b{color:var(--ink);font-weight:600;white-space:nowrap}
+.card .pr{margin-top:auto;padding-top:14px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.card .pr b{font:600 18px Lora,serif;white-space:nowrap}
+.card .pr span{font-size:13.5px;color:var(--soft)}
+.empty{grid-column:1/-1;padding:40px;text-align:center;color:var(--soft);border:1px dashed var(--line);border-radius:8px}
+/* off-market */
+.dark{background:var(--deep);color:var(--deepink)}
+.dark p{color:#b3ad9f}
+.om{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,5vw,64px);align-items:center}
+.om ul{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.om li{display:flex;gap:14px;align-items:center;border:1px solid #33343d;border-radius:8px;padding:16px 18px;background:#1c1e26}
+.om li i{flex:none;width:36px;height:36px;border-radius:50%;border:1px solid var(--gold);display:grid;place-items:center;color:#d4b373;font:600 15px Lora,serif;font-style:normal}
+.om li b{display:block;color:var(--deepink)}
+@media(max-width:760px){.om{grid-template-columns:1fr}}
+/* agence */
+.svc{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:22px;margin-top:32px}
+.svc div{padding-top:18px;border-top:2px solid var(--gold)}
+.svc h3{margin-bottom:8px}.svc p{margin:0;color:var(--soft);font-size:15.5px}
+/* contact */
+.ct{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(28px,5vw,64px)}
+.direct{display:grid;gap:12px;margin-top:24px}
+.direct a{display:flex;gap:14px;align-items:center;text-decoration:none;padding:14px 16px;background:var(--paper);border:1px solid var(--line);border-radius:10px;transition:border-color .25s,transform .25s}
+.direct a:hover{border-color:var(--gold);transform:translateX(4px)}
+.direct svg{flex:none;width:22px;height:22px;color:var(--gold2)}
+.direct small{display:block;color:var(--soft);font-size:13px}
+form{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:clamp(20px,3vw,32px);display:grid;gap:14px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+label{display:grid;gap:6px;font-size:14px;font-weight:500}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{display:block}
+.chips input{position:absolute;opacity:0;width:1px;height:1px}
+.chips span{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border:1px solid var(--line);border-radius:999px;font-weight:500;cursor:pointer;transition:all .2s}
+.chips input:checked+span{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chips input:focus-visible+span{outline:2px solid var(--gold);outline-offset:2px}
+.out{display:none;border-top:1px solid var(--line);padding-top:16px;gap:12px}
+.out.on{display:grid;animation:up .5s both}
+.out .acts{display:flex;flex-wrap:wrap;gap:10px}
+.note{font-size:13.5px;color:var(--soft);margin:0}
+@media(max-width:760px){.ct{grid-template-columns:1fr}.row{grid-template-columns:1fr}}
+/* modal */
+dialog{border:0;padding:0;border-radius:12px;width:min(920px,94vw);max-height:92vh;background:var(--paper);color:var(--ink);box-shadow:0 30px 80px -20px rgba(0,0,0,.6)}
+dialog::backdrop{background:rgba(14,14,18,.6);backdrop-filter:blur(3px)}
+dialog[open]{animation:pop .45s cubic-bezier(.2,.8,.2,1)}
+.mh{background:var(--deep);color:var(--deepink);padding:22px 26px;display:flex;justify-content:space-between;gap:16px;align-items:start}
+.mh .loc{color:#d4b373;font-size:13.5px;margin-bottom:6px}
+.mh h2{font-size:clamp(24px,3vw,32px);color:var(--deepink)}
+.mh .sub{color:#b3ad9f;margin-top:6px}
+.x{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid #3a3b44;background:none;color:var(--deepink);font-size:22px;cursor:pointer}
+.mimg{aspect-ratio:21/8;overflow:hidden;background:var(--deep);position:relative}.gal{display:flex;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}.gal img{flex:0 0 100%;scroll-snap-align:start}.gnav{position:absolute;right:14px;bottom:14px;display:flex;gap:8px}.gnav button{width:44px;height:44px;border-radius:50%;border:0;background:rgba(22,24,31,.75);color:#efe9dc;font-size:24px;cursor:pointer}.mimg img,.mimg svg{width:100%;height:100%;object-fit:cover;display:block}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));border-bottom:1px solid var(--line)}
+.tiles div{padding:16px 18px;border-right:1px solid var(--line);font-size:12.5px;color:var(--soft)}
+.tiles b{display:block;font:600 21px Lora,serif;color:var(--ink);white-space:nowrap}
+.mb{padding:24px 26px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:28px}
+.mb h3{font-size:17px;margin:0 0 10px;color:var(--gold2)}
+.mb p{margin:0 0 18px}
+.mb ul{margin:0 0 18px;padding:0;list-style:none;display:grid;gap:7px}
+.mb li{padding-left:16px;position:relative;font-size:15px}
+.mb li::before{content:"";position:absolute;left:0;top:.62em;width:6px;height:6px;background:var(--gold);border-radius:1px}
+.price{background:var(--bg);border-radius:8px;padding:14px 16px;font-size:14.5px;margin-bottom:16px}
+.price b{font:600 19px Lora,serif;display:block}
+@media(max-width:700px){.mb{grid-template-columns:1fr}.mimg{aspect-ratio:16/9}}
+/* footer */
+footer{border-top:1px solid var(--line);font-size:13.5px;color:var(--soft)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px}
+.wa{position:fixed;right:18px;bottom:18px;z-index:30;width:56px;height:56px;border-radius:50%;background:#1f9d55;color:#fff;display:grid;place-items:center;box-shadow:var(--shadow);transition:transform .25s}
+.wa:hover{transform:scale(1.08)}.wa svg{width:28px;height:28px}
+/* motion */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+.hero .a{animation:up .9s cubic-bezier(.2,.7,.2,1) both}
+.hero .a:nth-child(2){animation-delay:.12s}.hero .a:nth-child(3){animation-delay:.24s}.hero .a:nth-child(4){animation-delay:.36s}
+.stack-pics figure,.mini{animation:up 1s cubic-bezier(.2,.7,.2,1) both}
+.p2{animation-delay:.25s!important}.p3{animation-delay:.4s!important}.mini{animation-delay:.6s!important}
+@keyframes up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header><div class="nav">
+  <a class="logo" href="#top"><b>PR'IMMO</b><small>Biens d'aujourd'hui, projets de demain</small></a>
+  <nav aria-label="Navigation"><a href="#biens">Nos biens</a><a href="#off-market">Off-market</a><a href="#agence">L'agence</a><a href="#contact">Contact</a></nav>
+  <a class="btn" href="#contact">Nous contacter</a>
+</div></header>
+
+<main id="top">
+<section class="band"><div class="wrap hero">
+  <div>
+    <h1 class="a">Terrains, entrepôts, bureaux et maisons, partout en France.</h1>
+    <p class="lead a">PR'IMMO accompagne les entreprises, les promoteurs, les investisseurs et les particuliers dans la vente, l'achat et la location de leurs biens, depuis Montpellier.</p>
+    <div class="ctas a"><a class="btn" href="#biens">Voir les biens</a><a class="btn ghost" href="#contact">Décrire mon besoin</a></div>
+    <div class="facts a">
+      <div><strong data-count="NB">NB</strong>biens publiés</div>
+      <div><strong data-count="8">8</strong>terrains à bâtir</div>
+      <div><strong data-count="ND">ND</strong>départements</div>
+    </div>
+  </div>
+  <div class="stack-pics" aria-hidden="true">
+    <figure class="p1"><div data-cov="B06" style="width:100%;height:100%"></div></figure>
+    <figure class="p2"><div data-cov="B10" style="width:100%;height:100%"></div></figure>
+    <figure class="p3"><div data-cov="B14" style="width:100%;height:100%"></div></figure>
+    <div class="mini"><div class="r"><span>Réf. B10</span><span>À louer ou à vendre</span></div><h3>Entrepôts logistiques, accès direct A36</h3>
+      <div class="t"><div><b>74 450 m²</b>surface</div><div><b>10 T/m²</b>dallage</div><div><b>dès 25 €</b>/m²/an HT</div></div></div>
+  </div>
+</div></section>
+
+<section class="band" id="biens" style="padding-top:0"><div class="wrap">
+  <div class="cat-head rv">
+    <div><h2>Nos biens</h2><p>Prix de vente honoraires inclus (HAI). Loyers indicatifs, hors taxes et hors charges. Par confidentialité, les photos et la localisation précise sont communiquées sur demande. Cliquez sur un bien pour voir sa fiche.</p></div>
+    <div class="tools">
+      <div class="seg" role="group" aria-label="Filtrer par type">
+        <button type="button" data-f="all" aria-pressed="true">Tous</button>
+        <button type="button" data-f="louer" aria-pressed="false">À louer</button>
+        <button type="button" data-f="vendre" aria-pressed="false">À vendre</button>
+      </div>
+      <select id="cat" aria-label="Type de bien"><option value="all">Tous types</option><option value="ter">Terrains</option><option value="ent">Entrepôts & activité</option><option value="bur">Bureaux</option><option value="hab">Habitation & immeubles</option><option value="dom">Domaines & châteaux</option><option value="park">Parkings</option></select>
+      <input id="q" type="search" placeholder="Ville, département…" aria-label="Rechercher une ville">
+      <select id="sort" aria-label="Trier"><option value="ref">Par référence</option><option value="up">Surface croissante</option><option value="down">Surface décroissante</option></select>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+</div></section>
+
+<section class="band dark" id="off-market"><div class="wrap om">
+  <div class="rv">
+    <h2 style="color:var(--deepink)">Off-market : nos dossiers confidentiels</h2>
+    <p style="font-size:17px;margin:18px 0 26px">Certains biens ne sont pas publiés. Ils sont présentés en direct, après un premier échange sur votre projet.</p>
+    <a class="btn gold" href="#contact" data-ref="Off-market">Accéder aux dossiers</a>
+  </div>
+  <ul class="rv">
+    <li><i>1</i><div><b>Domaine et hébergement</b>Ensembles atypiques, projets de reconversion</div></li>
+    <li><i>2</i><div><b>Biens mixtes à Montpellier</b>Habitation et local commercial</div></li>
+    <li><i>3</i><div><b>Recherche sur mesure</b>Dans notre réseau de propriétaires et d'investisseurs</div></li>
+  </ul>
+</div></section>
+
+<section class="band" id="agence"><div class="wrap">
+  <div class="rv" style="max-width:760px"><h2>Une agence, un interlocuteur</h2>
+  <p style="color:var(--soft);font-size:17px;margin:16px 0 0">PR'IMMO est une agence immobilière de Montpellier. Elle accompagne la vente, l'achat et la location de biens professionnels en France, et la transaction résidentielle à Montpellier et dans ses environs.</p></div>
+  <div class="svc">
+    <div class="rv"><h3>Location de locaux</h3><p>Entrepôts, plateformes logistiques et locaux d'activité, en totalité ou à la découpe.</p></div>
+    <div class="rv"><h3>Vente d'immobilier d'entreprise</h3><p>Bureaux, locaux d'activité et ensembles tertiaires, pour utilisateurs et investisseurs.</p></div>
+    <div class="rv"><h3>Recherche sur mesure</h3><p>Vous décrivez votre besoin, nous cherchons le bien dans notre portefeuille et notre réseau.</p></div>
+    <div class="rv"><h3>Résidentiel</h3><p>Achat et vente de maisons et d'appartements à Montpellier et à une heure autour.</p></div>
+  </div>
+</div></section>
+
+<section class="band" id="contact" style="background:var(--paper);border-top:1px solid var(--line)"><div class="wrap ct">
+  <div class="rv">
+    <h2>Parlons de votre projet</h2>
+    <p style="color:var(--soft);margin:14px 0 0">Une visite, un plan, une question : réponse rapide, du lundi au vendredi.</p>
+    <div class="direct">
+      <a href="tel:+33764108405"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2"/></svg><div><b>07 64 10 84 05</b><small>Arafa Jibril · Conseiller immobilier</small></div></a>
+      <a href="https://wa.me/33764108405"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3.5 20.5l1.3-4.2A8.5 8.5 0 1 1 8 19.3z"/></svg><div><b>WhatsApp</b><small>Écrire directement</small></div></a>
+      <a href="mailto:primmo.mtp@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><div><b>primmo.mtp@gmail.com</b><small>Réponse sous 24 h ouvrées</small></div></a>
+    </div>
+  </div>
+  <form id="f" class="rv" novalidate>
+    <div class="chips" role="radiogroup" aria-label="Votre projet">
+      <label><input type="radio" name="p" value="Louer un local" checked><span>Louer</span></label>
+      <label><input type="radio" name="p" value="Acheter un bien"><span>Acheter</span></label>
+      <label><input type="radio" name="p" value="Vendre ou confier un bien"><span>Vendre</span></label>
+      <label><input type="radio" name="p" value="Investir"><span>Investir</span></label>
+    </div>
+    <div class="row"><label>Nom et prénom<input id="nom" required autocomplete="name"></label><label>Société<input id="soc" autocomplete="organization"></label></div>
+    <div class="row"><label>Téléphone<input id="tel" type="tel" autocomplete="tel"></label><label>E-mail<input id="mail" type="email" autocomplete="email"></label></div>
+    <label>Bien concerné<select id="ref"></select></label>
+    <label>Votre message<textarea id="msg" rows="4" placeholder="Surface recherchée, secteur, délai…"></textarea></label>
+    <p class="note" id="err" role="alert"></p>
+    <button class="btn" type="submit">Préparer mon message</button>
+    <div class="out" id="out" aria-live="polite">
+      <p class="note">Votre message est prêt. Choisissez comment l'envoyer :</p>
+      <div class="acts"><a class="btn gold" id="wa" href="#">Envoyer sur WhatsApp</a><a class="btn ghost" id="em" href="#">Envoyer par e-mail</a><button class="btn ghost" type="button" id="cp">Copier le message</button></div>
+      <p class="note">Si rien ne s'ouvre : copiez le message et envoyez-le à primmo.mtp@gmail.com ou au 07 64 10 84 05.</p>
+    </div>
+  </form>
+</div></section>
+</main>
+
+<footer class="band" style="padding-block:28px"><div class="wrap">
+  <div><b style="font-family:Lora,serif;color:var(--ink)">SARL PR'IMMO</b> · 73 allée Kléber, 34000 Montpellier · SIRET 439 699 950 00028</div>
+  <div>Documents non contractuels : surfaces et disponibilités à confirmer lors de la visite. DPE et diagnostics sur demande.</div>
+</div></footer>
+
+<a class="wa" href="https://wa.me/33764108405" aria-label="Écrire sur WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3.5 20.5l1.3-4.2A8.5 8.5 0 1 1 8 19.3z"/><path d="M9 9.5c.3 2 2.2 4 4.5 4.5l1-1.2 1.8.8c-.2 1-1 1.7-2 1.7-3 0-6.3-3.3-6.3-6.3 0-1 .7-1.8 1.7-2l.8 1.8z" fill="currentColor" stroke="none"/></svg></a>
+
+<dialog id="dlg" aria-labelledby="dt"></dialog>
+
+<script>
+{
+/* ---------- 3D : volumétrie d'illustration aux couleurs relevées sur les photos ---------- */
+const V3=(()=>{
+const sub=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+const norm=a=>{const l=Math.hypot(...a)||1;return a.map(k=>k/l)};
+const avg=p=>[0,1,2].map(i=>p.reduce((s,q)=>s+q[i],0)/p.length);
+const SUN=norm([-0.55,-0.75,0.9]);
+const rgb=(c,k=1,a=1)=>`rgba(${c.map(v=>Math.round(Math.max(0,Math.min(255,v*k)))).join(",")},${a})`;
+// primitives
+const box=(x,y,z,w,d,h,col,o={})=>({kind:"box",x,y,z,w,d,h,col,o});
+const gable=(x,y,z,w,d,h,col,o={})=>({kind:"gable",x,y,z,w,d,h,col,o});
+const hip=(x,y,z,w,d,h,col,o={})=>({kind:"hip",x,y,z,w,d,h,col,o});
+const flat=(x,y,w,d,col,o={})=>({kind:"flat",x,y,z:0.02,w,d,h:0,col,o});
+const tree=(x,y,r,h,col=[92,124,70])=>({kind:"tree",x,y,z:0,w:0,d:0,h,r,col,o:{}});
+function faces(o){
+ const {x,y,z,w,d,h}=o,F=[];const c=[[x,y],[x+w,y],[x+w,y+d],[x,y+d]];
+ if(o.kind==="flat"){F.push({pts:c.map(p=>[p[0],p[1],z]),top:true,flat:true,n:[0,0,1]});return F}
+ if(o.kind==="box"){for(let i=0;i<4;i++){const a=c[i],b=c[(i+1)%4];F.push({pts:[[a[0],a[1],z],[b[0],b[1],z],[b[0],b[1],z+h],[a[0],a[1],z+h]],side:i})}
+  if(!o.o.noTop)F.push({pts:c.map(p=>[p[0],p[1],z+h]),top:true})}
+ if(o.kind==="gable"){const ym=y+d/2,zt=z+h;
+  F.push({pts:[[x,y,z],[x+w,y,z],[x+w,ym,zt],[x,ym,zt]],roof:true});
+  F.push({pts:[[x+w,y+d,z],[x,y+d,z],[x,ym,zt],[x+w,ym,zt]],roof:true});
+  F.push({pts:[[x,y+d,z],[x,y,z],[x,ym,zt]],pign:true});F.push({pts:[[x+w,y,z],[x+w,y+d,z],[x+w,ym,zt]],pign:true})}
+ if(o.kind==="hip"){const r=Math.min(d/2,w/2)*0.9,ym=y+d/2,zt=z+h,a=[x+r,ym,zt],b=[x+w-r,ym,zt];
+  F.push({pts:[[x,y,z],[x+w,y,z],b,a],roof:true});F.push({pts:[[x+w,y+d,z],[x,y+d,z],a,b],roof:true});
+  F.push({pts:[[x,y+d,z],[x,y,z],a],roof:true});F.push({pts:[[x+w,y,z],[x+w,y+d,z],b],roof:true})}
+ const cen=[x+w/2,y+d/2,z+h/2];
+ F.forEach(f=>{if(f.n)return;const p=f.pts;let n=norm(cross(sub(p[1],p[0]),sub(p[2],p[0])));if(dot(n,sub(avg(p),cen))<0)n=n.map(k=>-k);f.n=n});
+ return F;
+}
+function verts(o){const v=[],c=[[o.x,o.y],[o.x+o.w,o.y],[o.x+o.w,o.y+o.d],[o.x,o.y+o.d]];
+ if(o.kind==="box")c.forEach(p=>v.push([p[0],p[1],o.z],[p[0],p[1],o.z+o.h]));
+ else{c.forEach(p=>v.push([p[0],p[1],o.z]));v.push([o.x+o.w*.2,o.y+o.d/2,o.z+o.h],[o.x+o.w*.8,o.y+o.d/2,o.z+o.h])}return v}
+function hull(P){P=P.slice().sort((a,b)=>a[0]-b[0]||a[1]-b[1]);const cr=(o,a,b)=>(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0]);
+ const lo=[],up=[];for(const p of P){while(lo.length>1&&cr(lo[lo.length-2],lo[lo.length-1],p)<=0)lo.pop();lo.push(p)}
+ for(const p of P.slice().reverse()){while(up.length>1&&cr(up[up.length-2],up[up.length-1],p)<=0)up.pop();up.push(p)}return lo.slice(0,-1).concat(up.slice(0,-1))}
+
+function Viewer(cv,objs,opt={}){
+ const ctx=cv.getContext("2d");let FIT=null,ang=opt.ang??0.7,tilt=opt.tilt??0.62,auto=!opt.still,W=0,H=0,S=1,zoom=opt.zoom||1,all,shadows,trees,R,HM,sel=null;
+ function load(list){objs=list;all=objs.filter(o=>o.kind!=="tree").map(o=>({o,F:faces(o),c:[o.x+o.w/2,o.y+o.d/2,o.z]}));
+  trees=objs.filter(o=>o.kind==="tree");
+  shadows=objs.filter(o=>o.kind!=="flat"&&o.kind!=="tree"&&o.z<0.5&&!o.o.ns&&!o.o.ghost).map(o=>hull(verts(o).map(p=>[p[0]-SUN[0]*p[2]/SUN[2],p[1]-SUN[1]*p[2]/SUN[2]])));
+  R=1;HM=1;objs.forEach(o=>{HM=Math.max(HM,o.z+o.h);[[o.x,o.y],[o.x+o.w,o.y+o.d],[o.x,o.y+o.d],[o.x+o.w,o.y]].forEach(p=>R=Math.max(R,Math.hypot(p[0],p[1])))})}
+ load(objs);
+ function size(){const r=cv.getBoundingClientRect(),dp=Math.min(2,devicePixelRatio||1);W=r.width;H=r.height;if(!W||!H)return;cv.width=W*dp;cv.height=H*dp;ctx.setTransform(dp,0,0,dp,0,0);
+  S=zoom*Math.min(W*0.42/R,H*0.66/(R*Math.sin(tilt)*2+HM*Math.cos(tilt)));if(FIT){const ca=Math.cos(ang),sa=Math.sin(ang),ct=Math.cos(tilt),st=Math.sin(tilt);let a=1e9,b=-1e9,c=1e9,e=-1e9;objs.forEach(o=>verts(o.kind==='tree'?{...o,kind:'box'}:o).forEach(p=>{const x=p[0]*ca-p[1]*sa,y=p[0]*sa+p[1]*ca,v=-(p[2]*ct+y*st);a=Math.min(a,x);b=Math.max(b,x);c=Math.min(c,v);e=Math.max(e,v)}));FIT={cx:(a+b)/2,cy:(c+e)/2};S=zoom*Math.min(W*.9/(b-a),H*.78/(e-c))}}
+ const path=P=>{ctx.beginPath();P.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath()};
+ function draw(){if(!W)return;ctx.clearRect(0,0,W,H);
+  const ca=Math.cos(ang),sa=Math.sin(ang),ct=Math.cos(tilt),st=Math.sin(tilt),dv=[0,ct,-st];
+  const rot=p=>[p[0]*ca-p[1]*sa,p[0]*sa+p[1]*ca,p[2]];const OY=FIT?H/2-FIT.cy*S+8:H/2+(HM*ct*S)/2,OX=FIT?W/2-FIT.cx*S:W/2;
+  const prj=p=>{const r=rot(p);return[OX+r[0]*S,OY-(r[2]*ct+r[1]*st)*S]};const depth=p=>dot(rot(p),dv);
+  ctx.save();ctx.translate(OX,OY);ctx.scale(1,st);const g=ctx.createRadialGradient(0,0,0,0,0,R*S*1.15);
+  g.addColorStop(0,"rgba(0,0,0,.12)");g.addColorStop(1,"rgba(0,0,0,0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,R*S*1.15,0,7);ctx.fill();ctx.restore();
+  all.filter(a=>a.o.kind==="flat").forEach(drawObj);
+  ctx.fillStyle="rgba(20,24,30,.30)";shadows.forEach(h=>{path(h.map(p=>prj([p[0],p[1],0.05])));ctx.fill()});
+  trees.forEach(t=>{const c=prj([t.x-SUN[0]*t.h/SUN[2]*.6,t.y-SUN[1]*t.h/SUN[2]*.6,0]);ctx.fillStyle="rgba(20,30,15,.22)";ctx.beginPath();ctx.ellipse(c[0],c[1],t.r*S*1.1,t.r*S*st*1.1,0,0,7);ctx.fill()});
+  const L=all.filter(a=>a.o.kind!=="flat").map(a=>({a,k:depth(a.c),z:a.o.z})).concat(trees.map(t=>({t,k:depth([t.x,t.y,0]),z:0}))).sort((p,q)=>q.k-p.k||p.z-q.z);
+  L.forEach(e=>e.t?drawTree(e.t):drawObj(e.a));
+  if(opt.labels)objs.forEach(o=>{if(!o.o.label||!o.o.label.trim())return;const p=prj([o.x+o.w/2,o.y+o.d/2,o.z+o.h+(o.o.lift||2)]);const t=o.o.label;ctx.font="600 12px Inter,system-ui,sans-serif";const w=ctx.measureText(t).width+14;
+   ctx.fillStyle=sel===o.o.key?"#b08d4a":"rgba(22,24,31,.86)";ctx.beginPath();ctx.roundRect?ctx.roundRect(p[0]-w/2,p[1]-22,w,20,10):ctx.rect(p[0]-w/2,p[1]-22,w,20);ctx.fill();
+   ctx.fillStyle="#fff";ctx.textAlign="center";ctx.fillText(t,p[0],p[1]-8);ctx.strokeStyle="rgba(22,24,31,.5)";ctx.beginPath();ctx.moveTo(p[0],p[1]-2);ctx.lineTo(p[0],p[1]+6);ctx.stroke()});
+  function drawTree(t){const b=prj([t.x,t.y,0]),c=prj([t.x,t.y,t.h]);ctx.strokeStyle="rgba(80,60,40,.9)";ctx.lineWidth=Math.max(1,S*.35);ctx.beginPath();ctx.moveTo(...b);ctx.lineTo(...c);ctx.stroke();
+   const r=t.r*S,gr=ctx.createRadialGradient(c[0]-r*.35,c[1]-r*.4,r*.1,c[0],c[1],r);gr.addColorStop(0,rgb(t.col,1.25));gr.addColorStop(1,rgb(t.col,.72));ctx.fillStyle=gr;ctx.beginPath();ctx.arc(c[0],c[1]-r*.3,r,0,7);ctx.fill()}
+  function drawObj(a){const o=a.o;
+   if(o.o.ghost){for(const f of a.F){if(dot(rot(f.n),dv)>=0)continue;const P=f.pts.map(prj);path(P);ctx.fillStyle="rgba(255,255,255,.22)";ctx.fill();ctx.strokeStyle="rgba(255,255,255,.95)";ctx.lineWidth=1.3;ctx.stroke();
+     if(f.side!==undefined&&o.o.floors>1){const p=f.pts;ctx.setLineDash([4,4]);ctx.strokeStyle="rgba(255,255,255,.8)";for(let k=1;k<o.o.floors;k++){const z=p[0][2]+(p[3][2]-p[0][2])*k/o.o.floors;ctx.beginPath();ctx.moveTo(...prj([p[0][0],p[0][1],z]));ctx.lineTo(...prj([p[1][0],p[1][1],z]));ctx.stroke()}ctx.setLineDash([])}}return}
+   for(const f of a.F){if(dot(rot(f.n),dv)>=0)continue;const P=f.pts.map(prj);
+    const lit=f.flat?1:0.6+0.4*Math.max(0,dot(f.n,SUN));
+    const col=f.roof?o.col:f.pign?(o.o.wall||o.col):(f.top&&o.kind==="box")?(o.o.roof||[150,152,155]):o.col;
+    path(P);
+    if(f.side!==undefined){const b=[(P[0][0]+P[1][0])/2,(P[0][1]+P[1][1])/2],t=[(P[2][0]+P[3][0])/2,(P[2][1]+P[3][1])/2];
+     const gr=ctx.createLinearGradient(b[0],b[1],t[0],t[1]);gr.addColorStop(0,rgb(col,lit*.82));gr.addColorStop(1,rgb(col,lit));ctx.fillStyle=gr}
+    else ctx.fillStyle=rgb(col,lit);
+    ctx.fill();deco(f,o,prj,P);
+    path(P);ctx.strokeStyle=f.flat?"rgba(0,0,0,.08)":"rgba(25,28,34,.32)";ctx.lineWidth=.7;ctx.stroke();
+    if(o.o.hi&&!f.flat){path(P);ctx.fillStyle="rgba(255,255,255,.28)";ctx.fill();ctx.strokeStyle="#fff";ctx.lineWidth=2.2;ctx.stroke()}}}
+  function deco(f,o,prj,P){const p=f.pts,O=o.o;
+   if(f.flat){if(O.lines==="parking"){const n=Math.max(6,Math.round(o.w/2.6));ctx.strokeStyle="rgba(255,255,255,.8)";ctx.lineWidth=.9;
+     for(let i=1;i<n;i++){const x=o.x+o.w*i/n;[[o.y+1,o.y+5.5],[o.y+o.d-5.5,o.y+o.d-1]].forEach(([a,b])=>{ctx.beginPath();ctx.moveTo(...prj([x,a,.05]));ctx.lineTo(...prj([x,b,.05]));ctx.stroke()})}}
+    if(O.border){path(p.map(prj));ctx.setLineDash([6,5]);ctx.strokeStyle="rgba(255,255,255,.95)";ctx.lineWidth=1.6;ctx.stroke();ctx.setLineDash([])}
+    if(O.stripes){ctx.strokeStyle="rgba(255,255,255,.06)";ctx.lineWidth=S*1.2;for(let i=1;i<O.stripes;i++){const x=o.x+o.w*i/O.stripes;ctx.beginPath();ctx.moveTo(...prj([x,o.y,.03]));ctx.lineTo(...prj([x,o.y+o.d,.03]));ctx.stroke()}}return}
+   const UV=(u,v)=>{const b=[0,1,2].map(i=>p[0][i]+(p[1][i]-p[0][i])*u);return prj([b[0],b[1],b[2]+(p[3][2]-p[0][2])*v])};
+   const quad=(u0,v0,u1,v1)=>path([UV(u0,v0),UV(u1,v0),UV(u1,v1),UV(u0,v1)]);
+   const glass=(u0,v0,u1,v1)=>{const a=UV(u0,v0),b=UV(u0,v1);quad(u0,v0,u1,v1);const g=ctx.createLinearGradient(a[0],a[1],b[0],b[1]);
+    g.addColorStop(0,"rgba(34,42,54,.95)");g.addColorStop(1,"rgba(104,122,142,.95)");ctx.fillStyle=g;ctx.fill()};
+   if(f.top&&o.kind==="box"){
+    if(O.parapet){const c=avg(p),k=.96,q=p.map(v=>[c[0]+(v[0]-c[0])*k,c[1]+(v[1]-c[1])*(1-(1-k)*o.w/o.d),v[2]]);path(q.map(prj));ctx.fillStyle="rgba(0,0,0,.07)";ctx.fill();ctx.strokeStyle="rgba(255,255,255,.3)";ctx.lineWidth=.8;ctx.stroke()}
+    if(O.sky){const n=O.sky;for(let i=0;i<n;i++){const x0=o.x+o.w*(i+.3)/n,x1=o.x+o.w*(i+.7)/n;path([[x0,o.y+o.d*.12,o.z+o.h],[x1,o.y+o.d*.12,o.z+o.h],[x1,o.y+o.d*.88,o.z+o.h],[x0,o.y+o.d*.88,o.z+o.h]].map(prj));ctx.fillStyle="rgba(120,150,175,.75)";ctx.fill()}}
+    if(O.ribsTop){const n=Math.round(o.w/2.5);ctx.strokeStyle="rgba(0,0,0,.08)";ctx.lineWidth=.6;for(let i=1;i<n;i++){const x=o.x+o.w*i/n;ctx.beginPath();ctx.moveTo(...prj([x,o.y,o.z+o.h]));ctx.lineTo(...prj([x,o.y+o.d,o.z+o.h]));ctx.stroke()}}
+    return}
+   if(f.roof){const n=Math.max(6,Math.round((o.w+o.d)/2.2));ctx.strokeStyle=O.slate?"rgba(255,255,255,.07)":"rgba(0,0,0,.13)";ctx.lineWidth=.6;
+    if(p.length===4)for(let i=1;i<n;i++){const u=i/n;const a=[0,1,2].map(k=>p[0][k]+(p[3][k]-p[0][k])*u),b=[0,1,2].map(k=>p[1][k]+(p[2][k]-p[1][k])*u);ctx.beginPath();ctx.moveTo(...prj(a));ctx.lineTo(...prj(b));ctx.stroke()}
+    if(O.verriere&&p.length===4){const q=[0,1,2,3].map(i=>p[i]);const L=(u,v)=>{const a=[0,1,2].map(k=>q[0][k]+(q[1][k]-q[0][k])*u),b=[0,1,2].map(k=>q[3][k]+(q[2][k]-q[3][k])*u);return prj(a.map((s,k)=>s+(b[k]-s)*v))};
+     path([L(.08,.15),L(.92,.15),L(.92,.85),L(.08,.85)]);ctx.fillStyle="rgba(120,150,175,.78)";ctx.fill();ctx.strokeStyle="rgba(255,255,255,.4)";for(let i=1;i<12;i++){ctx.beginPath();ctx.moveTo(...L(.08+.84*i/12,.15));ctx.lineTo(...L(.08+.84*i/12,.85));ctx.stroke()}}
+    return}
+   if(f.side===undefined)return;
+   const len=Math.hypot(p[1][0]-p[0][0],p[1][1]-p[0][1]),n=O.floors||0;
+   if(O.ribs){const m=Math.round(len/1.6);ctx.strokeStyle="rgba(0,0,0,.09)";ctx.lineWidth=.6;for(let i=1;i<m;i++){ctx.beginPath();ctx.moveTo(...UV(i/m,0));ctx.lineTo(...UV(i/m,1));ctx.stroke()}}
+   if(O.brick){ctx.strokeStyle="rgba(255,235,220,.10)";ctx.lineWidth=.5;const m=Math.round((p[3][2]-p[0][2])/.6);for(let i=1;i<m;i++){ctx.beginPath();ctx.moveTo(...UV(0,i/m));ctx.lineTo(...UV(1,i/m));ctx.stroke()}}
+   if(O.base){quad(0,0,1,O.baseH||.18);ctx.fillStyle=rgb(O.base,1,.95);ctx.fill()}
+   if(O.windows&&n){
+    if(O.res){const m=Math.max(1,Math.round(len/(O.step||4)));for(let k=0;k<n;k++)for(let i=0;i<m;i++){const u=(i+.5)/m,hw=Math.min(.18,.9/len);glass(u-hw,(k+.25)/n,u+hw,(k+.78)/n);
+      [[u-hw*2.1,u-hw*1.05],[u+hw*1.05,u+hw*2.1]].forEach(([a,b])=>{quad(a,(k+.25)/n,b,(k+.78)/n);ctx.fillStyle=rgb(O.shut||[246,244,238],1,.95);ctx.fill()})}}
+    else if(O.punch){const m=Math.max(2,Math.round(len/(O.step||2.4)));for(let k=0;k<n;k++)for(let i=0;i<m;i++){const u=(i+.5)/m,hw=.32/m;glass(u-hw,(k+.3)/n,u+hw,(k+.82)/n)}}
+    else if(O.curtain){glass(.02,.04,.98,.96);ctx.strokeStyle=rgb(O.frame||[200,204,208]);ctx.lineWidth=1;const m=Math.round(len/1.8);for(let i=1;i<m;i++){ctx.beginPath();ctx.moveTo(...UV(i/m,.04));ctx.lineTo(...UV(i/m,.96));ctx.stroke()}for(let k=1;k<n;k++){ctx.beginPath();ctx.moveTo(...UV(.02,k/n));ctx.lineTo(...UV(.98,k/n));ctx.stroke()}}
+    else if(O.fins){const m=Math.round(len/1.4);for(let k=0;k<n;k++)glass(.02,(k+.12)/n,.98,(k+.9)/n);ctx.fillStyle=rgb(o.col,.95);for(let i=0;i<=m;i++){const u=.02+.96*i/m;quad(u-.006,0,u+.006,1);ctx.fill()}}
+    else{const m=Math.round(len/1.5);for(let k=0;k<n;k++){glass(.02,(k+.3)/n,.98,(k+.86)/n);ctx.strokeStyle="rgba(215,218,222,.85)";ctx.lineWidth=.7;for(let i=1;i<m;i++){const u=.02+.96*i/m;ctx.beginPath();ctx.moveTo(...UV(u,(k+.3)/n));ctx.lineTo(...UV(u,(k+.86)/n));ctx.stroke()}}}}
+   if(n>1&&!O.curtain){ctx.strokeStyle="rgba(25,28,34,.22)";ctx.lineWidth=.7;for(let k=1;k<n;k++){ctx.beginPath();ctx.moveTo(...UV(0,k/n));ctx.lineTo(...UV(1,k/n));ctx.stroke()}}
+   if(O.band){quad(0,.9,1,.97);ctx.fillStyle=rgb(O.band,1,.92);ctx.fill()}
+   if(O.door&&f.side===(O.doorSide||0)){quad(.15,0,.85,.75);ctx.fillStyle="rgba(236,236,232,1)";ctx.fill();ctx.strokeStyle="rgba(0,0,0,.15)";ctx.lineWidth=.5;for(let j=1;j<6;j++){ctx.beginPath();ctx.moveTo(...UV(.15,.75*j/6));ctx.lineTo(...UV(.85,.75*j/6));ctx.stroke()}}
+   if(O.docks&&O.docks.side===f.side){const m=O.docks.count,dc=O.docks.col||[92,96,102],hh=O.docks.h||.33;for(let i=0;i<m;i++){const u=(i+.5)/m,hw=Math.min(.018,.4/m);quad(u-hw,.05,u+hw,hh);ctx.fillStyle=rgb(dc,1,.95);ctx.fill();
+     ctx.strokeStyle="rgba(0,0,0,.12)";ctx.lineWidth=.5;for(let j=1;j<5;j++){ctx.beginPath();ctx.moveTo(...UV(u-hw,.05+(hh-.05)*j/5));ctx.lineTo(...UV(u+hw,.05+(hh-.05)*j/5));ctx.stroke()}}}
+  }
+ }
+ // interactions
+ if(!opt.still){let drag=null;
+  cv.addEventListener("pointerdown",e=>{drag={x:e.clientX,a:ang};auto=false;cv.setPointerCapture(e.pointerId)});
+  cv.addEventListener("pointermove",e=>{if(drag){ang=drag.a+(e.clientX-drag.x)*0.012;draw()}});
+  const up=()=>{drag=null};cv.addEventListener("pointerup",up);cv.addEventListener("pointercancel",up);
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;let last=0,alive=true;
+  const loop=t=>{if(!alive)return;if(auto&&!reduce&&cv.isConnected){ang+=Math.min(50,t-last)*0.00022;draw()}last=t;if(cv.isConnected)requestAnimationFrame(loop)};requestAnimationFrame(loop)}
+ const ro=new ResizeObserver(()=>{size();draw()});ro.observe(cv);
+ return{toggle(){auto=!auto;return auto},set(list,o2={}){load(list);if(o2.tilt)tilt=o2.tilt;if(o2.ang!=null)ang=o2.ang;FIT=o2.fit?{}:null;if(o2.auto!=null)auto=o2.auto;opt.labels=o2.labels??opt.labels;if(o2.zoom)zoom=o2.zoom;if("sel" in o2)sel=o2.sel;size();draw()},zoom(k){zoom=Math.max(.6,Math.min(3,zoom*k));size();draw()},select(k){sel=k;draw()}};
+}
+
+/* ---------- couleurs relevées sur les photos ---------- */
+const K={sol:[208,204,196],enrobe:[128,131,136],gravier:[190,180,162],herbe:[126,150,92],tech:[150,152,154],tuile:[170,90,58],ardoise:[84,90,100]};
+const S={
+ B04:()=>[flat(-62,-40,124,80,K.enrobe,{lines:"parking"}),
+  box(-55,-28,0,70,40,8,[212,208,192],{ribs:true,docks:{side:0,count:6},roof:[140,144,148],ribsTop:true,base:[70,112,82],baseH:.12}),
+  box(18,-28,0,36,40,8,[212,208,192],{ribs:true,roof:[140,144,148],ribsTop:true,base:[70,112,82],baseH:.12}),
+  box(-55,14,0,40,16,7,[220,216,200],{floors:2,windows:true,punch:true,step:2,parapet:true,roof:[150,150,146],band:[70,112,82]})],
+ B05:()=>[flat(-66,-42,132,84,K.herbe),flat(-60,22,90,16,K.enrobe,{lines:"parking"}),
+  box(-55,-24,0,100,40,9,[208,210,210],{ribs:true,docks:{side:0,count:2},roof:[196,198,200],sky:16}),
+  box(-55,16,0,28,8,6,[164,66,52],{ribs:true,roof:[120,60,50]})],
+ B06:()=>[flat(-40,-34,80,68,K.sol),
+  gable(-30,-22,9,52,34,7,[110,116,122],{verriere:true,wall:[156,72,52]}),box(-30,-22,0,52,34,9,[156,72,52],{noTop:true,brick:true,docks:{side:0,count:2,col:[70,74,80],h:.45}}),
+  box(-30,14,0,30,12,9.6,[150,68,50],{floors:3,windows:true,punch:true,step:2,brick:true,roof:[96,98,100],parapet:true})],
+ B07:()=>[flat(-50,-38,100,76,K.enrobe,{lines:"parking"}),
+  box(-40,-24,0,62,42,9,[146,154,166],{ribs:true,docks:{side:0,count:2},roof:[120,126,132],ribsTop:true}),
+  box(22,-24,0,16,26,8,[146,154,166],{floors:2,windows:true,curtain:true,frame:[36,78,150],roof:[110,116,124],parapet:true})],
+ B08:()=>{const W=[200,184,150],R=[86,90,96],a=[];[[-70,-50,48,36,14.7],[-16,-50,40,26,9],[30,-50,34,20,8],[-70,-8,30,22,7],[-34,-8,26,22,7],[-2,-16,22,16,6],[26,-22,20,18,6],[-70,20,22,24,6],[-42,22,34,22,8],[0,8,24,20,7],[30,6,26,30,9]].forEach(([x,y,w,d,h],i)=>a.push(box(x,y,0,w,d,h,W,{roof:R,ribs:i!==5,floors:i===5?2:0,windows:i===5,punch:i===5})));return[flat(-78,-58,150,120,K.enrobe)].concat(a)},
+ B09:()=>[flat(-56,-38,112,76,K.enrobe,{lines:"parking"}),
+  box(-48,-26,0,44,36,9,[196,200,204],{ribs:true,docks:{side:0,count:4,col:[44,84,146]},roof:[150,154,158]}),
+  box(-2,-26,0,40,36,9,[196,200,204],{ribs:true,docks:{side:0,count:3,col:[44,84,146]},roof:[150,154,158]}),
+  box(-48,12,0,26,12,6.6,[210,210,206],{floors:2,windows:true,punch:true,roof:[150,154,158],parapet:true})],
+ B10:()=>[flat(-72,-48,144,96,K.enrobe,{lines:"parking"}),
+  box(-60,-26,0,120,52,12,[186,198,210],{docks:{side:0,count:14},ribs:true,parapet:true,roof:[150,156,162],band:[70,78,90]}),
+  box(-60,26,0,22,12,8,[186,198,210],{floors:2,windows:true,parapet:true,roof:[150,156,162]}),box(-30,-8,12,6,4,1.6,K.tech),box(10,4,12,6,4,1.6,K.tech)],
+ B11:()=>[flat(-60,-42,120,84,K.enrobe,{lines:"parking"}),
+  box(-50,-28,0,70,44,12,[168,174,182],{ribs:true,docks:{side:0,count:11},roof:[200,202,204],sky:8,base:[52,72,112],baseH:.08}),
+  box(20,-28,0,24,30,16,[168,174,182],{ribs:true,roof:[200,202,204],base:[52,72,112],baseH:.06})],
+ B12:()=>[flat(-44,-30,88,60,K.enrobe,{lines:"parking"}),
+  box(-36,-18,0,40,18,10,[192,176,146],{floors:3,windows:true,fins:true,roof:[130,126,120],parapet:true}),
+  box(8,-18,0,26,26,8,[170,170,168],{floors:2,windows:true,punch:true,step:3,roof:[130,130,130],parapet:true})],
+ B13:()=>{const C=[188,160,122],o={floors:4,windows:true,roof:[120,116,110],parapet:true};return[flat(-56,-40,112,80,K.herbe),flat(-50,18,60,16,K.enrobe,{lines:"parking"}),
+  box(-44,-26,0,50,16,13,C,o),box(6,-26,0,16,40,13,C,o),box(-44,-10,0,20,22,10,C,{...o,floors:3}),box(-24,-10,0,30,10,6.6,C,{...o,floors:2})]},
+ B14:()=>[flat(-46,-34,92,68,K.enrobe),
+  box(-38,-20,0,48,14,12.8,[222,218,206],{floors:4,windows:true,punch:true,step:2,roof:[140,140,138],parapet:true}),
+  gable(-38,-6,6,30,22,3,[168,62,48]),box(-38,-6,0,30,22,6,[214,212,204],{noTop:true,docks:{side:1,count:2}}),
+  gable(-6,-6,6,16,22,3,[168,62,48]),box(-6,-6,0,16,22,6,[214,212,204],{noTop:true})],
+ B18:()=>{const L=3.3,P=[206,182,142],o={floors:2,windows:true,punch:true,noTop:true};return[flat(-30,-16,60,32,K.sol),
+  box(-22,-9,0,44,18,L*2,P,o),box(-22,-9,L*2,44,18,L*2,P,{...o,hi:true}),box(-22,-9,L*4,44,18,L*3,P,{floors:3,windows:true,punch:true,parapet:true,roof:[150,140,128]}),
+  box(-14,-4,L*7,8,5,1.8,K.tech),box(4,-2,L*7,10,6,1.8,K.tech)]},
+ B19:()=>[flat(-40,-20,80,58,K.sol),flat(-38,15,76,21,K.enrobe,{lines:"parking"}),
+  box(-30,-12,0,60,22,10.5,[160,166,174],{floors:3,windows:true,ribs:true,parapet:true,roof:[196,196,192]}),
+  box(-10,-15,0,20,3,3.6,[160,166,174],{roof:[196,196,192]}),box(-6,-4,10.5,9,6,1.6,K.tech)],
+ B20:()=>[flat(-34,-28,68,56,K.herbe),flat(-30,10,40,14,K.enrobe,{lines:"parking"}),
+  box(-24,-14,0,36,12,7,[188,184,172],{floors:2,windows:true,punch:true,roof:[120,120,118],parapet:true}),
+  box(12,-14,0,14,18,6,[176,172,162],{ribs:true,roof:[120,120,118]})],
+ B23:()=>[flat(-18,-14,36,28,K.sol),
+  box(-11,-6,0,22,11,9,[196,182,158],{floors:3,windows:true,res:true,step:3,noTop:true}),hip(-11.5,-6.5,9,23,12,4,K.ardoise,{slate:true})],
+ B22:()=>[flat(-12,-12,24,24,K.herbe),
+  box(-4.5,-4,0,9,8,5.8,[222,214,196],{floors:2,windows:true,res:true,step:3,shut:[132,92,60],noTop:true}),gable(-5,-4.4,5.8,10,8.8,3.4,K.tuile)],
+ B16:()=>[flat(-10,-9,20,18,[120,138,92]),
+  box(-4,-3,0,7,6,3.2,[202,186,158],{floors:1,windows:true,res:true,step:3.5,noTop:true}),gable(-4.3,-3.3,3.2,7.6,6.6,1.8,K.tuile),
+  box(3,-2.5,1.6,3.2,4.5,.25,[200,196,188],{}),box(5.8,-2.4,0,.3,.3,1.6,[180,176,168]),box(5.8,1.6,0,.3,.3,1.6,[180,176,168])],
+ B01:()=>[flat(-15,-13,30,26,K.gravier),
+  box(-8,-5,0,16,10,5.6,[212,172,116],{floors:2,windows:true,noTop:true,res:true}),gable(-8.6,-5.6,5.6,17.2,11.2,3.4,[166,86,54]),
+  box(4,5,0,6,5,3,[214,212,204],{door:true,roof:[160,158,152]})]
+};
+// Château : domaine schématique (positions non réelles) + château niveau par niveau
+const PIERRE=[206,190,160],ENDUIT=[198,188,170];
+S.B32=()=>{const a=[flat(-60,-44,120,88,K.herbe,{stripes:12}),flat(-5,-44,10,26,K.gravier),flat(-26,-18,52,12,K.gravier)];
+ a.push(box(-13,-6,0,26,13,10,PIERRE,{floors:3,windows:true,res:true,step:3.2,shut:[236,232,222],noTop:true,label:"D · Château",key:"D",lift:7}),hip(-13.5,-6.5,10,27,14,4.6,K.ardoise,{slate:true}),
+  box(-21,-8,0,8,17,11.5,PIERRE,{floors:3,windows:true,res:true,step:3.4,shut:[236,232,222],noTop:true}),hip(-21.5,-8.5,11.5,9,18,5,K.ardoise,{slate:true}),
+  box(13,-8,0,8,17,11.5,PIERRE,{floors:3,windows:true,res:true,step:3.4,shut:[236,232,222],noTop:true}),hip(12.5,-8.5,11.5,9,18,5,K.ardoise,{slate:true}),
+  box(-6,-2,14.2,1.3,1.3,2,[150,120,100]),box(5,-2,14.2,1.3,1.3,2,[150,120,100]));
+ a.push(box(18,14,0,30,10,6.6,ENDUIT,{floors:2,windows:true,res:true,step:3,noTop:true,label:"B · 20 chambres",key:"B"}),gable(17.6,13.6,6.6,30.8,10.8,3,K.tuile));
+ a.push(box(-46,8,0,16,9,4,ENDUIT,{floors:1,windows:true,res:true,step:3.5,noTop:true,label:"A · Services",key:"A"}),gable(-46.4,7.6,4,16.8,9.8,2.6,K.tuile));
+ a.push(box(-44,24,0,11,8,3.6,ENDUIT,{floors:1,door:true,doorSide:0,noTop:true,label:"C · Laverie",key:"C"}),gable(-44.4,23.6,3.6,11.8,8.8,2.4,K.tuile));
+ a.push(box(30,34,0,9,7,3.4,ENDUIT,{floors:1,windows:true,res:true,step:3,noTop:true,label:"E · Infirmerie",key:"E"}),gable(29.6,33.6,3.4,9.8,7.8,2.2,K.tuile));
+ [[-52,-36,4.5,9],[-46,-26,3.5,8],[-54,-10,4.5,9],[-32,-38,3.5,8],[22,-38,4.5,9],[38,-30,5,10],[50,-16,4,8],[52,2,3.5,8],[50,38,4.5,9],[8,36,4,8],[-18,36,4.5,9],[-54,38,3.5,8],[-26,26,3,7],[-56,16,3.5,8],[46,-38,3.5,8]].forEach(([x,y,r,h])=>a.push(tree(x,y,r,h)));
+ return a};
+// ---------- intérieurs (agencement indicatif d'après la liste des pièces) ----------
+const MAT={parquet:[178,134,92],carrelage:[204,198,186],tomettes:[176,104,78],moquette:[92,98,112],beton:[156,154,148],mur:[236,230,218],bois:[132,94,62],sombre:[60,62,70],blanc:[236,236,232],rouge:[150,48,48],vert:[86,120,84]};
+function plan(rooms,furn){const a=[],seen=new Set();
+ rooms.forEach(r=>{const[x,y,w,d,mat,lab]=r;a.push(flat(x,y,w,d,MAT[mat]||mat,{label:lab,key:lab,lift:1.7}));
+  [[x,y,x+w,y],[x+w,y,x+w,y+d],[x,y+d,x+w,y+d],[x,y,x,y+d]].forEach(([x0,y0,x1,y1])=>{const L=Math.hypot(x1-x0,y1-y0),n=Math.max(1,Math.ceil(L/2.2));
+   for(let i=0;i<n;i++){const ax=x0+(x1-x0)*i/n,ay=y0+(y1-y0)*i/n,bx=x0+(x1-x0)*(i+1)/n,by=y0+(y1-y0)*(i+1)/n;
+    if(r[6]&&i===Math.floor(n/2)&&!(Math.abs(ax-bx)<.01&&Math.abs(ax)>13.9))continue; // ouverture de porte
+    const k=[ax,ay,bx,by].map(v=>v.toFixed(2)).join();if(seen.has(k))continue;seen.add(k);
+    const th=.22;a.push(box(Math.min(ax,bx)-(ax===bx?th/2:0),Math.min(ay,by)-(ay===by?th/2:0),0,Math.max(th,Math.abs(bx-ax)),Math.max(th,Math.abs(by-ay)),1.5,MAT.mur,{roof:[246,242,234]}))}})});
+ return a.concat(furn)}
+const f=(x,y,w,d,h,c,o={})=>box(x,y,0.02,w,d,h,c,{ns:1,...o});
+const table=(x,y,w,d)=>[f(x,y,w,d,.75,MAT.bois)];
+const chairs=(x,y,n,dx,dy,c=MAT.sombre)=>Array.from({length:n},(_,i)=>f(x+dx*i,y+dy*i,.5,.5,.5,c));
+const shelf=(x,y,w,d)=>[f(x,y,w,d,1.35,MAT.bois)];
+const bed=(x,y,rot)=>rot?[f(x,y,2,1.4,.5,MAT.blanc),f(x,y,.15,1.4,.9,MAT.bois)]:[f(x,y,1.4,2,.5,MAT.blanc),f(x,y,1.4,.15,.9,MAT.bois)];
+const stair=(x,y)=>Array.from({length:6},(_,i)=>f(x,y+i*.45,2.2,.45,.2+i*.18,[190,184,172]));
+const INT={
+ c0:()=>plan([[-14,-6.5,10,13,"beton","Pièce 1",1],[-4,-6.5,8,13,"beton","Pièce 2 · escalier",1],[4,-6.5,10,13,"beton","Pièce 3",1]],[...stair(-1.1,1.5),...shelf(-13.6,-6,6,.6),...shelf(10,5.2,3.6,.6)]),
+ c1:()=>plan([[-14,-6.5,12,6.5,"parquet","Bar",1],[-14,0,6,6.5,"carrelage","Labo photo",1],[-8,0,6,6.5,"parquet","Salle de réunion",1],[-2,-6.5,4,13,"tomettes","Hall",1],[2,-6.5,12,6.5,"parquet","Bibliothèque",1],[2,0,12,6.5,"moquette","Salle de projection",1]],
+  [f(-13.4,-5.8,.7,5,1.1,MAT.bois),f(-13.4,-5.8,4,.7,1.1,MAT.bois),...chairs(-12.4,-4.6,4,0,1.1),...table(-8,-4.5,1,1),...table(-5.5,-2.4,1,1),...table(-8,-2,1,1),
+   f(-13.6,.5,.7,5.5,.95,MAT.blanc),f(-11,5.3,2.6,.7,.95,MAT.blanc),...table(-6.6,2.4,3.2,1.6),...chairs(-6.6,1.7,4,.85,0),...chairs(-6.6,4.1,4,.85,0),...stair(-1.1,1.6),
+   ...shelf(2.4,-6.2,11,.5),...shelf(13.4,-5.6,.5,4.6),...table(5,-3.2,4,1.4),...chairs(5.2,-4,4,1,0),...chairs(5.2,-1.6,4,1,0),
+   f(13.4,.8,.15,4.8,1.4,MAT.blanc),...[0,1,2,3].flatMap(r=>chairs(10.6-r*1.9,1.3,5,0,.95,MAT.rouge))]),
+ c2:()=>plan([[-14,-6.5,8,6.5,"moquette","Studio d'enregistrement",1],[-6,-6.5,4,6.5,"moquette","Régie",1],[-14,0,12,6.5,"parquet","Salle d'activités",1],[-2,-6.5,4,13,"tomettes","Palier",1],[2,-6.5,6,6.5,"carrelage","Archives",1],[8,-6.5,6,6.5,"carrelage","Bandothèque",1],[2,0,12,6.5,"parquet","Salle d'activités ",1]],
+  [f(-12,-4.4,1.6,1.6,.9,[150,150,150]),f(-11.5,-3.9,.1,.1,1.5,MAT.sombre),f(-8.6,-5.9,1,1,1,MAT.sombre),f(-5.6,-5.2,3,.9,.8,MAT.sombre),f(-5.4,-5.1,.6,.1,1.25,[30,34,40]),f(-4.4,-5.1,.6,.1,1.25,[30,34,40]),...chairs(-4.7,-3.8,2,1,0),
+   ...table(-12,2.2,2,1.2),...table(-8.5,2.2,2,1.2),...table(-12,4.4,2,1.2),...table(-8.5,4.4,2,1.2),...stair(-1.1,1.6),
+   ...[0,1,2].flatMap(i=>shelf(2.6,-6+i*2,4.6,.5)),...[0,1,2].flatMap(i=>shelf(8.6,-6+i*2,4.6,.5)),...table(4,2,3,1.4),...table(9,2,3,1.4),...chairs(4.2,4,3,1,0),...chairs(9.2,4,3,1,0)]),
+ c3:()=>plan([[-14,-6.5,12,13,"parquet","Salle d'activités",1],[-2,-6.5,4,13,"tomettes","Palier",1],[2,-6.5,12,8,"parquet","Salle d'activités ",1],[2,1.5,12,5,"beton","Rangement",1]],
+  [...table(-11,-3,3,1.4),...table(-6.5,-3,3,1.4),...table(-11,1.5,3,1.4),...table(-6.5,1.5,3,1.4),...stair(-1.1,1.6),...table(5,-3.4,5,1.6),...chairs(5.2,-4.2,5,1,0),...chairs(5.2,-1.6,5,1,0),...shelf(2.4,5.8,11,.5),f(10,2.2,2,1.6,1,[176,168,150])]),
+ h0:()=>plan(chambres(1).concat([[11,-5,4,10,"carrelage","Locaux techniques · réserve",1]]),fur(1)),
+ h1:()=>plan(chambres(11).concat([[11,-5,4,10,"tomettes","Palier · escalier",1]]),fur(11).concat(stair(12,-1)))
+};
+function chambres(n0){const r=[];for(let i=0;i<5;i++){r.push([-15+i*5.2,-5,5.2,4,"parquet","Ch. "+(n0+i),1]);r.push([-15+i*5.2,1,5.2,4,"parquet","Ch. "+(n0+5+i),1])}r.push([-15,-1,26,2,"tomettes","",0]);return r}
+function fur(){const a=[];for(let i=0;i<5;i++){const x=-15+i*5.2;a.push(...bed(x+.4,-4.6,1),...bed(x+.4,1.9,1),f(x+3.6,-4.6,1.2,.6,.75,MAT.bois),f(x+3.6,4.1,1.2,.6,.75,MAT.bois))}return a}
+// ---------- intérieurs des autres biens ----------
+const desk=(x,y)=>[f(x,y,1.4,.7,.75,MAT.blanc),f(x+.45,y+.8,.5,.5,.5,MAT.sombre)];
+function classe(x0,x1,y0,y1){const a=[];for(let y=y0+1.2;y<y1-1.4;y+=2.2)for(let x=x0+.8;x<x1-1.8;x+=2.2)a.push(f(x,y,1.6,.6,.75,MAT.blanc),f(x+.55,y+.7,.5,.5,.5,MAT.sombre));return a}
+function atelier(x0,x1,y0,y1){const a=[f(x0+.4,y0+.4,x1-x0-.8,.8,.95,[120,124,130]),f(x0+.4,y1-1.2,x1-x0-.8,.8,.95,[120,124,130])];for(let x=x0+2;x<x1-3;x+=4)a.push(f(x,(y0+y1)/2-.9,2.4,1.8,.95,[150,154,160]));return a}
+const casiers=(x0,x1,y)=>{const a=[];for(let x=x0;x<x1-.6;x+=.7)a.push(f(x,y,.6,.5,1.8,[120,130,142]));return a};
+const sani=(x0,x1,y)=>{const a=[];for(let x=x0+.3;x<x1-1;x+=1.4)a.push(f(x,y,1.1,1,.8,MAT.blanc));return a};
+const sofa=(x,y,w)=>[f(x,y,w,.9,.45,[110,104,96]),f(x,y,w,.25,.85,[110,104,96])];
+Object.assign(INT,{
+ // Gennevilliers : d'après les plans de la fiche (salles, réserves, halls)
+ g0:()=>{const R=[],F=[],W=6.6;for(let i=0;i<8;i++){R.push([-38+i*W,-7,W,14,"carrelage","Salle "+(i+1),1]);F.push(...classe(-38+i*W,-38+(i+1)*W,-7,7))}
+  R.push([14.8,-7,5.6,14,"tomettes","Hall",1],[20.4,-7,5.6,14,"carrelage","Sanitaires",1],[26,-7,8,14,"beton","Magasin",1],[34,-7,6,14,"beton","Technique",1]);
+  F.push(...stair(16.4,-2),...sani(20.6,26,-6.5),...atelier(26,34,-7,7),...casiers(34.4,39.6,-6.6));return plan(R,F)},
+ g1:()=>{const R=[],F=[];for(let i=0;i<8;i++){R.push([-24+i*4.25,-7,4.25,6,"moquette",i===0?"Bureaux":"",1],[-24+i*4.25,1,4.25,6,"moquette","",1]);F.push(...desk(-23.4+i*4.25,-5.6),...desk(-23.4+i*4.25,3.4))}
+  R.push([-24,-1,34,2,"tomettes","Couloir",0],[10,-7,6.6,14,"tomettes","Hall",1],[16.6,-7,4.4,14,"carrelage","WC",1],[21,-7,19,5,"moquette","Bureaux",1],[21,-2,19,9,"carrelage","Formation",1]);
+  F.push(...stair(17.6,1),...desk(22,-6),...desk(26,-6),...desk(30,-6),...classe(21,40,-2,7));return plan(R,F)},
+ g2:()=>plan([[-40,-7,15.9,14,"beton","PLUTON",1],[-24.1,-7,6.9,14,"carrelage","Réserves",1],[-17.2,-7,12.2,14,"carrelage","Formation",1],[-5,-7,8.9,14,"beton","SATURNE",1],[3.9,-7,5.5,14,"carrelage","Réserves",1],[9.4,-7,6.7,14,"tomettes","Hall",1],[16.1,-7,6.1,14,"carrelage","Palier",1],[22.2,-7,7.8,14,"carrelage","Vestiaires",1],[30,-7,10,14,"carrelage","ORION",1]],
+  [...atelier(-40,-24.1,-7,7),...stair(-23.2,2),...classe(-17.2,-5,-7,7),...atelier(-5,3.9,-7,7),...casiers(4.3,9,-6.6),...stair(17,-1),...casiers(22.6,29.6,-6.6),...casiers(22.6,29.6,6),...classe(30,40,-7,7)]),
+ g3:()=>plan([[-40,-7,15.9,14,"beton","ÉMERAUDE",1],[-24.1,-7,6.9,14,"carrelage","Réserve",1],[-17.2,-7,12.2,14,"carrelage","Formation",1],[-5,-7,7,14,[70,74,80],"Vide",0],[2,-7,7.4,14,"beton","Ventilation",1],[9.4,-7,7.8,14,"tomettes","Hall",1],[17.2,-7,5,14,"carrelage","Sanitaires",1],[22.2,-7,8.4,14,"carrelage","TURQUOISE",1],[30.6,-7,9.4,14,"carrelage","OPALE",1]],
+  [...atelier(-40,-24.1,-7,7),...stair(-23.2,2),...classe(-17.2,-5,-7,0),f(3,-6,5,3,1.6,[150,154,160]),f(3,2,5,3,1.6,[150,154,160]),...stair(18.4,-1),...sani(17.4,22,5.5),...classe(22.2,30.6,-7,7),...classe(30.6,40,-7,7)]),
+ // Pantin : plateau type (la forme réelle de l'immeuble n'est pas reproduite)
+ p0:()=>{const R=[],F=[];for(let i=0;i<14;i++){const x=-30+i*4.3;R.push([x,1.2,4.3,6.8,"moquette",i===3?"Bureaux cloisonnés":"",1]);F.push(...desk(x+.6,3.6));
+   if(x<-5.5||x>5.2){R.push([x,-8,4.3,6.8,"moquette","",1]);F.push(...desk(x+.6,-5.4))}}
+  R.push([-30,-1.2,60.2,2.4,"tomettes","Couloir",0],[-4.2,-8,8.6,6.8,"carrelage","Noyau central",1]);
+  F.push(f(-3.8,-7.6,2,2,2.2,[150,150,150]),f(-1.4,-7.6,2,2,2.2,[150,150,150]),...sani(1,4,-7.4),...stair(1.4,-5));return plan(R,F)},
+ // Pont-d'Hérault : surfaces exactes de l'attestation (38,2 m²), disposition estimée
+ o0:()=>plan([[-3,-2.8,5.6,3.6,"tomettes","Séjour-cuisine · 20 m²",1],[-3,.8,3.3,2.7,"parquet","Chambre · 8,9 m²",1],[.3,.8,1.6,1.75,"carrelage","SdB · 2,8 m²",1],[1.9,.8,.7,1.4,"carrelage","Dégagement · 1 m²",1]],
+  [f(-2.8,-2.6,2.6,.6,.9,MAT.blanc),f(-2.8,-2.6,.6,1.6,.9,MAT.blanc),...table(.2,-2.2,1.2,.8),...sofa(.3,-.6,1.9),...bed(-2.7,1.1,1),f(.4,.9,1.3,.7,.5,MAT.blanc)]),
+ o1:()=>plan([[-3,-2.8,5.6,3.6,[90,84,76],"Vide sur séjour",0],[-3,.8,5.6,1,"parquet","Mezzanine · 5,5 m²",1]],[f(-2.6,.9,1.8,.8,.25,MAT.blanc),f(.2,.9,1,.6,.5,MAT.bois)]),
+ // Brouzet : pièces par niveau d'après l'annonce, disposition indicative
+ r0:()=>plan([[-8,-5,9,10,"carrelage","Séjour",1],[1,-5,7,5.5,"carrelage","Cuisine",1],[1,.5,7,4.5,"carrelage","Salle d'eau",1]],[...sofa(-6,-2,3),...table(-6,1.5,1.8,1),f(1.4,-4.6,4,.6,.9,MAT.blanc),...table(4,-2.5,1.4,1),f(1.4,3.4,1,1,.3,MAT.blanc),...stair(-7.6,-4.8)]),
+ r1:()=>plan([[-8,-5,9,6,"parquet","Salon",1],[1,-5,7,6,"carrelage","Cuisine",1],[-8,1,7,4,"parquet","Chambre 1",1],[-1,1,4,4,"carrelage","Salle de bains",1],[3,1,5,4,"tomettes","Dégagement",1]],[...sofa(-6,-3,3),f(1.4,-4.6,5,.6,.9,MAT.blanc),...table(3,-2.6,1.6,1),...bed(-6,1.6),f(-.6,1.4,1.7,.8,.5,MAT.blanc),...stair(5.2,1.2)]),
+ r2:()=>plan([[-8,-5,8,10,"parquet","Chambre 2",1],[0,-5,8,6,"parquet","Chambre 3",1],[0,1,8,4,"parquet","Dressing",1]],[...bed(-6,-2),...bed(2,-4),...shelf(.4,1.4,7,.6)])
+});
+// ---------- terrains : parcelle générique + volume constructible (hypothèses) ----------
+const TER={
+ B15:{mode:"loc",ces:.5,nmin:1,nmax:2,n:1,hl:4,cout:1500,rev:0,usage:"Équipement public",lvl:"niveau"},
+ B24:{mode:"loc",ces:.6,nmin:1,nmax:2,n:2,hl:3.5,cout:1100,rev:85,usage:"Local d'activité ou commerce",lvl:"niveau"},
+ B27:{mode:"loc",ces:.5,nmin:1,nmax:3,n:1,hl:5,cout:900,rev:95,usage:"Bâtiment d'activité, logistique ou tertiaire",lvl:"niveau"},
+ B28:{mode:"vente",ces:.4,nmin:1,nmax:5,n:3,hl:3,cout:2400,rev:7500,usage:"Logements collectifs",lvl:"niveau"},
+ B29:{mode:"vente",fixed:960,cout:3000,rev:10000,usage:"Projet de 3 villas de 320 m²"},
+ B30:{mode:"loc",ces:.5,nmin:1,nmax:2,n:1,hl:5,cout:900,rev:70,usage:"Entrepôt ou bâtiment d'activité",lvl:"niveau",lots:2},
+ B31:{mode:"vente",ces:.6,nmin:1,nmax:7,n:5,hl:3,cout:2300,rev:5500,usage:"Immeuble de logements",lvl:"niveau"}
+};
+const TERRE=[150,142,112];
+function parcelle(A,ratio){const w=Math.sqrt(A*ratio),d=A/w;return[w,d]}
+Object.keys(TER).forEach(ref=>{const T=TER[ref];
+ S[ref]=(n)=>{n=n??T.n;const m2={B15:2600,B24:400,B27:18000,B28:1900,B29:3400,B30:9000,B31:1000}[ref];
+  const[w,d]=parcelle(m2,1.45),a=[flat(-w/2-4,-d/2-4,w+8,d+8,K.sol),flat(-w/2,-d/2,w,d,ref==="B29"?[132,146,98]:ref==="B27"||ref==="B30"?TERRE:[136,150,100],{border:1})];
+  // repères d'angle
+  [[-w/2,-d/2],[w/2,-d/2],[w/2,d/2],[-w/2,d/2]].forEach(([x,y])=>a.push(box(x-.25,y-.25,0,.5,.5,1.2,[240,240,236],{ns:1})));
+  if(ref==="B29"){// EBC boisé + 3 villas R+1 de 160 m² d'emprise (CES 20 % de 2 400 m²)
+   const eb=1000/d;for(let i=0;i<14;i++)a.push(tree(-w/2+2+((i*37)%Math.max(2,eb-4)),-d/2+3+((i*53)%(d-6)),2.6,6,[78,110,64]));
+   [[-w/2+eb+6,-d/2+8],[-w/2+eb+6+(w-eb-12)/2-6,d/2-22],[w/2-20,-d/2+10]].forEach(([x,y],i)=>{a.push(box(x,y,0,16,10,6.4,[226,214,190],{floors:2,windows:true,curtain:true,frame:[220,214,200],roof:[200,194,182],parapet:true,label:"Villa "+(i+1),key:"v"+i,lift:2}))});
+   return a}
+  if(T.lots){a.push(box(-.15,-d/2,0,.3,d,.6,[240,240,236],{ns:1}))}
+  const e=Math.sqrt(T.ces),gw=w*e,gd=d*e;
+  if(T.lots){const lw=w/2*e,ld=d*e;[-w/4,w/4].forEach((cx,i)=>a.push(box(cx-lw/2,-ld/2,0,lw,ld,n*T.hl,[255,255,255],{ghost:true,floors:n,label:"Lot "+(i+1)+" · 4 500 m²",key:"l"+i})))}
+  else a.push(box(-gw/2,-gd/2,0,gw,gd,n*T.hl,[255,255,255],{ghost:true,floors:n,label:"Volume constructible (hypothèse)",key:"g"}));
+  return a};
+ T.m2={B15:2600,B24:400,B27:18000,B28:1900,B29:3400,B30:9000,B31:1000}[ref];
+});
+const echelle=m2=>m2>=6000?"≈ "+(m2/7140).toLocaleString("fr-FR",{maximumFractionDigits:1})+" terrain"+(m2/7140>=1.5?"s":"")+" de football":"≈ "+Math.round(m2/261)+" courts de tennis";
+
+const IV={
+ B32:[{l:"Le domaine",ext:1,z:1.55,t:"Cinq bâtiments dans un parc de 1,8 ha : le château (D), l'hébergement de 20 chambres (B), les services généraux (A), la laverie-atelier (C) et l'infirmerie (E)."},
+  {l:"Intérieur du château",d:2,lv:[["Vue éclatée","Le château : 11 pièces sur 4 niveaux (sous-sol, rez-de-chaussée, 1er et 2e étages).",()=>S.B32niv(-1),1.35,.62],["Sous-sol","Sous-sol : 3 pièces et l'escalier.",INT.c0,1.5,.9],["Rez-de-chaussée","Rez-de-chaussée : bar, labo photo, bibliothèque, salle de projection, salle de réunion, hall d'entrée.",INT.c1,1.5,.9],["1er étage","1er étage : studio d'enregistrement et sa régie, archives, bandothèque, salle d'activités.",INT.c2,1.5,.9],["2e étage","2e étage : deux salles d'activités et un rangement.",INT.c3,1.5,.9]]},
+  {l:"Hébergement · 20 chambres",d:0,lv:[["Rez-de-chaussée","Hébergement, rez-de-chaussée : chambres 1 à 10, locaux techniques et réserve.",INT.h0,1.45,.9],["1er étage","Hébergement, 1er étage : chambres 11 à 20.",INT.h1,1.45,.9]]}],
+ B19:[{l:"Extérieur",ext:1,t:"Bâtiment indépendant de 3 015 m² sur un site sécurisé, avec 80 places de parking."},
+  {l:"Intérieur, niveau par niveau",d:0,lv:[["RDC bas","RDC bas · 1 026 m², hauteur 2,76 m : huit salles de formation, hall, sanitaires, magasin-atelier et locaux techniques.",INT.g0,1,1.05,0],["RDC haut","RDC haut · 671 m², hauteur 2,86 m : seize bureaux de part et d'autre d'un couloir, hall, bureaux et une salle de formation d'environ 100 m².",INT.g1,1,1.05,0],["R+1","R+1 · 732 m², hauteur 3,13 m : ateliers PLUTON (125 m²) et SATURNE (57 m²), salle de formation de 106 m², salle ORION (93 m²), hall de 84 m², vestiaires et réserves.",INT.g2,1,1.05,0],["R+2","R+2 · 586 m², hauteur 4,23 m : atelier ÉMERAUDE (126 m²), salles TURQUOISE (74 m²) et OPALE (94 m²), salle de formation de 63 m², hall de 89 m², local ventilation.",INT.g3,1,1.05,0]]}],
+ B18:[{l:"Extérieur",ext:1,t:"Les plateaux disponibles (R+2 et R+3) sont surlignés en blanc."},
+  {l:"Intérieur d'un plateau",d:0,lv:[["Plateau type R+2 / R+3","Plateau type : bureaux cloisonnés le long des couloirs, noyau central (ascenseurs, sanitaires, locaux techniques). R+2 : 1 284 m² de bureaux, 96 m² de circulations, 150 m² de locaux techniques. R+3 : 1 270 m² de bureaux. Hauteur 2,50 m.",INT.p0,1,1.0,0]]}],
+ B16:[{l:"Extérieur",ext:1,t:"Maison de 38 m² au bord de la rivière, avec sa terrasse."},
+  {l:"Intérieur",d:0,lv:[["Rez-de-chaussée","Séjour-cuisine de 20 m², chambre de 8,9 m², salle de bains de 2,8 m² et dégagement de 1 m² (surfaces de l'attestation de surface).",INT.o0,1,.95],["Mezzanine","Mezzanine de 5,5 m² au-dessus du séjour. Surface habitable totale : 38,2 m².",INT.o1,1,.95]]}],
+ B01:[{l:"Extérieur",ext:1,t:"Maison sur plusieurs niveaux, sur un terrain de 1 800 m²."},
+  {l:"Intérieur, niveau par niveau",d:1,lv:[["Rez-de-chaussée","Rez-de-chaussée : séjour, cuisine et salle d'eau, de quoi créer un appartement indépendant.",INT.r0,1.3,.92],["Niveau de vie","Salon, cuisine, salle de bains et première chambre.",INT.r1,1.3,.92],["Étage","Deux chambres et un dressing.",INT.r2,1.3,.92]]}]
+};
+const NIV=[["Sous-sol","3 pièces"],["Rez-de-chaussée","Bar, labo photo, bibliothèque, salle de projection, salle de réunion"],["1er étage","Salles d'activités, studio d'enregistrement, régie, archives, bandothèque"],["2e étage","Salles d'activités, rangement"]];
+S.B32niv=k=>{const a=[flat(-22,-14,44,28,K.gravier)];NIV.forEach((n,i)=>{a.push(box(-14,-6,i*8,28,13,3.2,i===0?[150,140,124]:PIERRE,{floors:1,windows:i>0,res:true,step:3.2,shut:[236,232,222],roof:[214,206,190],hi:i===k,label:n[0],key:"n"+i,lift:-1.3}))});
+ a.push(hip(-14.6,-6.6,4*8,29.2,14.2,4,K.ardoise,{slate:true}));return a};
+return{Viewer,S,NIV,INT,IV,TER,echelle};
+})();
+
+const IMG={};
+const B=[
+{ref:"B27",s:"vendre",cat:"ter",ville:"Blagnac · Toulouse",dep:"31",titre:"Terrain constructible d'activité",sous:"≈ 18 000 m² en secteur aéroportuaire",m2:18000,
+ tiles:[["≈ 18 000 m²","surface totale"],["Activités","zone constructible"],["Aéronautique","pôle à proximité"],["7 725 000 €","prix HAI"]],
+ kv:[["≈ 18 000 m²",""],["zone","d'activités"]],prix:"7 725 000 €",pu:"HAI",
+ desc:"Grand foncier constructible dans le secteur aéroportuaire et aéronautique toulousain. Une emprise rare de près de 2 hectares en zone d'activités, adaptée à un utilisateur industriel, logistique ou tertiaire, ou à une opération de promotion d'immobilier d'entreprise.",
+ car:["Surface totale : ≈ 18 000 m², d'un seul tenant","Terrain constructible","Zone d'activités économiques","Environnement aéronautique et tertiaire"],
+ acc:["Aéroport Toulouse-Blagnac : à proximité immédiate","Rocade et A621 : quelques minutes","Centre de Toulouse : ~15 min","Tram T1 dans le secteur"],
+ cond:"7 725 000 € HAI, soit 7 500 000 € net vendeur + 225 000 € HT d'honoraires."},
+{ref:"B28",s:"vendre",cat:"ter",ville:"Saint-Maur-des-Fossés",dep:"94",titre:"Terrains constructibles en zone urbaine",sous:"≈ 1 900 m² en zone urbaine · bien exposé",m2:1900,
+ tiles:[["≈ 1 900 m²","surface totale"],["Urbain","zone constructible"],["RER A","à proximité"],["2 575 000 €","prix HAI"]],
+ kv:[["≈ 1 900 m²",""],["zone","urbaine"]],prix:"2 575 000 €",pu:"HAI",
+ desc:"Foncier constructible en zone urbaine établie, dans un environnement résidentiel et commercial développé, avec façade sur rue et une bonne exposition : une assiette foncière adaptée à un projet de logements ou mixte en proche banlieue est de Paris.",
+ car:["Surface totale : environ 1 900 m²","Cession dans un projet global","Façade sur rue","Bonne exposition","Non soumis au DPE"],
+ acc:["RER A à proximité","Paris : ~30 min","A4 et A86 : accès rapide"],
+ cond:"2 575 000 € HAI, soit 2 500 000 € net vendeur + 75 000 € HT d'honoraires."},
+{ref:"B29",s:"vendre",cat:"ter",ville:"Mougins",dep:"06",titre:"Terrain avec vue panoramique et projet de 3 villas",sous:"≈ 3 400 m² · ≈ 2 400 m² constructibles · entièrement viabilisé",m2:3400,
+ tiles:[["≈ 3 400 m²","surface totale"],["2 400 m²","constructibles (UD)"],["3 villas","projet de 320 m² SHOB"],["2 060 000 €","prix HAI"]],
+ kv:[["≈ 3 400 m²",""],["3 villas","en projet"]],prix:"2 060 000 €",pu:"HAI",
+ desc:"Terrain en hauteur offrant une vue panoramique dégagée, vendu avec un projet d'ensemble de 3 villas haut de gamme. Le terrain est déjà en grande partie préparé pour le projet.",
+ car:["≈ 3 400 m², dont une partie boisée protégée (sans vis-à-vis)","2 400 m² en zone UD, CES de 20 %","Projet : 3 villas de 320 m² SHOB (sous-sol, RDC + R+1)","CUO déposé, lettre de recevabilité reçue","Accès pompiers validé","Viabilisé : eau, électricité, gaz, tout-à-l'égout, fibre"],
+ acc:["Vue panoramique dégagée","Cannes et la mer : à quelques minutes","Sophia-Antipolis : à proximité","A8 : accès rapide"],
+ cond:"2 060 000 € HAI, soit 2 000 000 € net vendeur + 60 000 € HT d'honoraires. Étude du vendeur : promotion classique ≈ 4 M€ de coût de revient pour ≈ 6,3 M€ de CA TTC."},
+{ref:"B30",s:"vendre",cat:"ter",ville:"Apt · Luberon",dep:"84",titre:"Terrain d'activité viabilisé",sous:"9 000 m² divisibles dès 4 500 m² · visibilité sur axe passant",m2:9000,
+ tiles:[["9 000 m²","surface totale"],["dès 4 500 m²","divisible"],["65 €/m²","net vendeur"],["602 550 €","prix HAI"]],
+ kv:[["9 000 m²",""],["dès 4 500 m²","divisible"]],prix:"602 550 €",pu:"HAI",
+ desc:"Terrain d'activité bénéficiant d'une excellente visibilité depuis un axe structurant et très fréquenté du secteur. Implanté dans un environnement d'activités économiques et d'entrepôts existants, il offre un bon compromis entre accessibilité, visibilité commerciale et fonctionnalité pour vos flux logistiques.",
+ car:["Surface totale : 9 000 m²","Divisible dès 4 500 m²","Terrain viabilisé","Zone d'activités économiques"],
+ acc:["Axe routier structurant : accès rapide et visibilité","Pays d'Apt – Luberon"],
+ cond:"602 550 € HAI, soit 585 000 € net vendeur (65 €/m²) + 17 550 € HT d'honoraires."},
+{ref:"B31",s:"vendre",cat:"ter",ville:"Lyon 8e",dep:"69",titre:"Terrain à bâtir pour un immeuble",sous:"1 000 m² en zone urbaine",m2:1000,
+ tiles:[["1 000 m²","surface du terrain"],["Immeuble","construction possible"],["Lyon 8e","arrondissement"],["1 534 700 €","prix HAI"]],
+ kv:[["1 000 m²",""],["immeuble","possible"]],prix:"1 534 700 €",pu:"HAI",
+ desc:"Terrain de 1 000 m² dans le 8e arrondissement de Lyon, avec la possibilité d'y construire un immeuble. Une opportunité foncière en ville pour un promoteur ou un investisseur.",
+ car:["Surface : 1 000 m²","Possibilité de construire un immeuble","Faisabilité détaillée à confirmer auprès des services d'urbanisme"],
+ acc:["Lyon 8e arrondissement","Métro, tramway et bus dans le secteur","Gare Part-Dieu : quelques minutes"],
+ cond:"1 534 700 € HAI, soit 1 490 000 € net vendeur + 44 700 € HT d'honoraires."},
+{ref:"B26",s:"vendre",cat:"ter",ville:"La Courneuve",dep:"93",titre:"Terrain avec projet d'architecte",sous:"Avant-projet sommaire (APS) · promoteurs intéressés",m2:0,
+ tiles:[["APS","projet d'architecte"],["3D","prévisualisation"],["Directe","sans condition suspensive"],["26 780 000 €","prix HAI"]],
+ kv:[["APS","+ 3D"],["vente","directe"]],prix:"26 780 000 €",pu:"HAI",
+ desc:"Foncier en Seine-Saint-Denis vendu avec un avant-projet d'architecte et une prévisualisation 3D. Des promoteurs ont déjà manifesté leur intérêt. Le propriétaire souhaite une vente directe, sans condition suspensive : une opération de portage idéale pour un investisseur ou un marchand de biens.",
+ car:["Projet d'architecte (APS) et prévisualisation 3D","Permis de construire prêt à être déposé","Études de sol et de pollution réalisées","Promoteurs intéressés par le foncier","Vente directe, sans condition suspensive","Dossier complet et business plan sur demande"],
+ acc:["Seine-Saint-Denis, aux portes de Paris","Métro 7, RER B, tram T1 dans le secteur","A86 et A1 à proximité"],
+ cond:"26 780 000 € HAI, soit 26 000 000 € net vendeur + 780 000 € HT d'honoraires."},
+{ref:"B15",s:"vendre",cat:"ter",ville:"Marcigny",dep:"71",titre:"Terrain nu",sous:"Terrain nu d'environ 2 600 m²",m2:2600,
+ tiles:[["≈ 2 600 m²","terrain nu"],["UE","zonage PLU"],["Public","projet à vocation"],["Nous consulter","prix"]],
+ kv:[["≈ 2 600 m²",""],["zone","UE"]],prix:"Nous consulter",pu:"",
+ desc:"Terrain nu proposé pour un projet à vocation publique. Il peut intéresser une collectivité ou un porteur de projet compatible avec le zonage UE du PLU de Marcigny.",
+ car:["Terrain nu, sans construction","Surface : environ 2 600 m²","Zonage PLU : UE","Projet à vocation publique"],
+ acc:["Commune de Marcigny (Saône-et-Loire)","Gare la plus proche : ~24 km"],
+ cond:"Prix : nous consulter. Faisabilité du projet à vérifier auprès des services d'urbanisme."},
+{ref:"B24",s:"vendre",cat:"ter",ville:"Gérardmer",dep:"88",titre:"Terrain en zone d'activités économiques",sous:"Terrain nu d'environ 400 m², proche du centre-ville",m2:400,
+ tiles:[["≈ 400 m²","terrain nu"],["UE","zonage PLUi"],["Centre","à proximité"],["Nous consulter","prix"]],
+ kv:[["≈ 400 m²",""],["centre","à proximité"]],prix:"Nous consulter",pu:"",
+ desc:"Terrain nu en zone réservée aux activités économiques, à proximité du centre-ville et du lac de Gérardmer. Idéal pour un artisan, un commerçant ou une activité de services dans une station touristique très fréquentée été comme hiver.",
+ car:["Surface : environ 400 m²","Zonage PLUi : UE (activités économiques)","Terrain nu, constructible","Desservi par le bus"],
+ acc:["Centre-ville et lac : à proximité","Station de ski : quelques minutes","Épinal : ~40 km · Colmar : ~50 km"],
+ cond:"Prix : nous consulter."},
+{ref:"B04",s:"louer",cat:"ent",ville:"Angoulême",dep:"16",titre:"Entrepôts & locaux d'activité",sous:"17 000 m² divisibles dès 1 000 m²",m2:17000,
+ tiles:[["17 000 m²","surface totale"],["dès 1 000 m²","divisible"],["5,80 m","hauteur sous plafond"],["27 €/m²/an","HT/HC"]],
+ kv:[["17 000 m²",""],["dès 1 000 m²","divisible"]],prix:"27 €/m²/an",pu:"HT/HC",
+ desc:"Ensemble immobilier à usage d'entrepôt et d'activité, entièrement de plain-pied, à quelques minutes des rocades d'Angoulême. Quatre entrepôts indépendants permettent de louer la totalité ou seulement la surface utile : stockage, logistique ou production.",
+ car:["Entrepôt 1 : 5 000 m² + bureaux, avec quais","Entrepôt 2 : 3 000 m², avec quais","Entrepôt 3 : 1 000 m²","Entrepôt 4 : 8 000 m²","Hauteur sous plafond : 5,80 m","Surfaces en rez-de-chaussée"],
+ acc:["Rocades d'Angoulême : quelques minutes","A10 et A89 : accès rapide"],
+ cond:"Loyer indicatif 27 €/m²/an HT/HC (12 €/m²/an HT/HC en sous-sol)."},
+{ref:"B05",s:"louer",cat:"ent",ville:"Saint-Doulchard · Bourges",dep:"18",titre:"Entrepôt logistique",sous:"10 300 m² sur un terrain d'environ 9,8 ha",m2:10300,
+ tiles:[["10 300 m²","surface du bâtiment"],["dès 3 000 m²","divisible"],["6,18 m","hauteur libre"],["29 €/m²/an","HT/HC"]],
+ kv:[["10 300 m²",""],["≈ 9,8 ha","de terrain"]],prix:"dès 29 €/m²/an",pu:"HT/HC",
+ desc:"Entrepôt aux portes de Bourges, sur un très grand terrain qui laisse de la place pour le stationnement poids lourds et une extension. Disponible immédiatement, adapté à la logistique, au stockage ou à l'industrie légère.",
+ car:["Bâtiment d'environ 10 300 m², divisible dès 3 000 m²","Terrain d'environ 9,8 ha","Environ 800 m² de bureaux et locaux sociaux","Hauteur libre : 6,18 m","2 quais de chargement, extension possible","Accès poids lourds"],
+ acc:["Autoroute A71 (Paris – Clermont-Ferrand)","Aux portes de Bourges"],
+ cond:"Loyer indicatif à partir de 29 €/m²/an HT/HC pour la totalité du site. Disponible immédiatement."},
+{ref:"B07",s:"louer",cat:"ent",ville:"Diors · Châteauroux",dep:"36",titre:"Entrepôt, activités & bureaux rénovés",sous:"6 248 m² divisibles, disponible de suite",m2:6248,
+ tiles:[["6 248 m²","surface développée"],["1 648 m²","de bureaux max."],["2 650 kVA","puissance électrique"],["24 €/m²/an","HT/HC"]],
+ kv:[["6 248 m²",""],["6,50 à 7,80 m","sous poutre"]],prix:"dès 24 €/m²/an",pu:"HT/HC",
+ desc:"Ensemble rénové, isolé et équipé de la climatisation réversible, en zone industrielle. Louable en totalité ou à la découpe, avec des bureaux démontables pour adapter les surfaces à votre activité.",
+ car:["Activité : 4 600 à 6 000 m² environ","Bureaux : jusqu'à 1 648 m² (démontables)","Hauteur sous poutre : 6,50 à 7,80 m","Sol 5 T/m², 2 portes sectionnelles (+2 en option)","2 quais PL en option","Plus de 100 places VL et PL"],
+ acc:["A20 : accès rapide (Paris, Limoges, Toulouse)","Aéroport de Châteauroux : à proximité","Agglomération de Châteauroux","Zone sous vidéosurveillance"],
+ cond:"Loyer indicatif 24 €/m²/an HT/HC pour la totalité, 27 €/m²/an HT/HC à la découpe. Aménagements possibles."},
+{ref:"B08",s:"louer",cat:"ent",ville:"Itancourt · Saint-Quentin",dep:"02",titre:"Parc logistique & d'activité",sous:"≈ 37 790 m² en 11 bâtiments indépendants",m2:37790,
+ tiles:[["37 790 m²","surface totale"],["11","bâtiments"],["14,70 m","hauteur libre max."],["dès 15 €/m²/an","HT/HC"]],
+ kv:[["37 790 m²",""],["11","bâtiments"]],prix:"dès 15 €/m²/an",pu:"HT/HC",
+ desc:"Ancien site industriel d'envergure loué bâtiment par bâtiment : bureaux, locaux d'activité, stockage et grands volumes logistiques. Une offre rare pour une entreprise qui veut grandir sur un même site, du sous-sol au R+1.",
+ car:["Grand volume de 14 576 m² · 19 €/m²","Bâtiment de 7 520 m² · 15 €/m²","Bureaux de 1 229 m² · 15 €/m²","Bâtiment de 2 459 m² · 35 €/m²","Cellules de 780 à 3 048 m² · 36 €/m²","Hauteurs libres jusqu'à 14,70 m"],
+ acc:["A26 et A29 : accès rapide","Agglomération de Saint-Quentin","Paris : ~2 h"],
+ cond:"Loyers indicatifs HT/HC par m² et par an, bâtiment par bâtiment. Plans détaillés sur demande."},
+{ref:"B09",s:"louer",cat:"ent",ville:"Romorantin-Lanthenay",dep:"41",titre:"Locaux d'activité & stockage",sous:"Surfaces modulables à partir de 1 500 m²",m2:1500,
+ tiles:[["dès 1 500 m²","surfaces modulables"],["Quais","niveleurs et sas"],["Racks","palettiers en place"],["dès 14 €/m²/an","HT/HC"]],
+ kv:[["dès 1 500 m²",""],["palettiers","en place"]],prix:"dès 14 €/m²/an",pu:"HT/HC",
+ desc:"Ancien complexe industriel de plusieurs bâtiments : halls d'activité, plateaux de stockage déjà équipés de palettiers et bureaux attenants. Une solution prête à l'emploi pour du stockage ou de la logistique en Sologne.",
+ car:["Plusieurs bâtiments, surfaces modulables","Locaux d'activité, stockage et bureaux","Plateaux de stockage avec palettiers existants","Quais PL avec niveleurs et sas","Espaces tertiaires attenants aux halls"],
+ acc:["A71 : ~30 min","Blois, Orléans et Tours : moins de 1 h 30"],
+ cond:"Loyer indicatif à partir de 14 €/m²/an HT/HC pour les surfaces en étage. Surfaces et niveaux détaillés sur demande."},
+{ref:"B10",s:"both",cat:"ent",ville:"Exincourt · Sochaux-Montbéliard",dep:"25",titre:"Entrepôts logistiques, accès direct A36",sous:"≈ 74 450 m² en 2 bâtiments, 12 ha de terrain",m2:74450,
+ tiles:[["74 450 m²","2 bâtiments"],["10 T/m²","portance du dallage"],["dès 25 €/m²/an","HT/HC"],["9 270 000 €","à la vente, HAI"]],
+ kv:[["74 450 m²",""],["12 ha","de terrain"]],prix:"dès 25 €/m²/an",pu:"ou 9 270 000 € HAI",
+ desc:"Ancien site industriel et logistique du bassin de Sochaux-Montbéliard. Deux bâtiments indépendants en charpente métallique, entièrement modulables, avec un accès poids lourds direct à l'A36. Un programme de travaux est prévu ; les loyers sont maintenus pour tout bail signé. Le site est aussi proposé à la vente.",
+ car:["Bâtiment 1 : 52 996 m², divisible dès 10 000 m², 9 portes à quai","Bâtiment 2 : 21 454 m², divisible dès 5 000 m², 7 portes à quai","Hauteur sous ferme : 7 m et 6 à 9 m","Dallage 20 cm, 10 T/m² · vestiaires et douches","Parking PL ~8 825 m² (dont 3 100 m² couverts)","Parking VL ~7 000 m²"],
+ acc:["Accès direct à l'A36","Agglomération de Montbéliard, proche Belfort","Gare TGV Belfort-Montbéliard : accès rapide","Suisse et aéroport de Bâle-Mulhouse : ~1 h"],
+ cond:"Location : à partir de 26 €/m²/an HT/HC ; 25 €/m²/an HT/HC pour la prise à bail de l'ensemble. Vente : 9 270 000 € HAI, soit 9 000 000 € net vendeur + 270 000 € HT d'honoraires."},
+{ref:"B11",s:"louer",cat:"ent",ville:"Pont-Sainte-Marie · Troyes",dep:"10",titre:"Entrepôts logistiques, 11 quais",sous:"11 157 m² disponibles sur un site d'environ 23 000 m²",m2:11157,
+ tiles:[["11 157 m²","disponibles"],["11","quais de chargement"],["15-16 m","transtockeur"],["dès 19 €/m²/an","HT/HC"]],
+ kv:[["11 157 m²",""],["11","quais"]],prix:"dès 19 €/m²/an",pu:"HT/HC",
+ desc:"Ensemble logistique aux portes de Troyes, dans une zone commerciale en développement. Plateaux d'activité sur deux niveaux, entrepôt de plain-pied avec 11 quais et transtockeur grande hauteur. Surfaces divisibles et combinables, ouvert à toute proposition.",
+ car:["Transtockeur : 2 730 m², hauteur 15 à 16 m","Entrepôt RDC : 2 400 m², 11 quais, 5,79 à 6,35 m","Plateau niveau 1 : 4 434 m²","Plateau niveau 2 : 4 233 m²","Foncier d'environ 3,6 ha","Accès PL de plain-pied"],
+ acc:["A26 et A5 : accès rapide","Agglomération de Troyes","Reims : ~1 h · Paris : ~2 h"],
+ cond:"Loyer indicatif à partir de 19 €/m²/an HT/HC. Conditions négociables."},
+{ref:"B14",s:"vendre",cat:"ent",ville:"Charleville-Mézières",dep:"08",titre:"Local d'activité & bureaux",sous:"Environ 2 000 m² bâtis sur environ 4 400 m² de terrain",m2:2000,
+ tiles:[["≈ 2 000 m²","surface bâtie"],["≈ 4 400 m²","de terrain"],["N43","accès rapide"],["Nous consulter","prix"]],
+ kv:[["≈ 2 000 m²",""],["≈ 4 400 m²","de terrain"]],prix:"Nous consulter",pu:"",
+ desc:"Ensemble de bureaux aménagés et d'un grand volume d'activité ou de stockage sous verrières, dans un environnement résidentiel en développement. Potentiel pour un utilisateur ou un investisseur, avec maintien de l'usage professionnel ou reconversion selon les règles d'urbanisme.",
+ car:["Surface bâtie : environ 2 000 m²","Terrain : environ 4 400 m²","Bureaux aménagés","Grand volume d'activité ou de stockage, sous verrières","Desservi par le bus"],
+ acc:["Accès rapide à la N43","Centre-ville et gare : quelques minutes"],
+ cond:"Prix : nous consulter."},
+{ref:"B12",s:"vendre",cat:"bur",ville:"Pont-Sainte-Marie · Troyes",dep:"10",titre:"Bureaux & magasin",sous:"2 lots, vendables ensemble ou séparément",m2:4000,
+ tiles:[["3 000 m²","bureaux sur 3 niveaux"],["1 000 m²","magasin sur 2 niveaux"],["669 500 €","par lot, HAI"],["1 236 000 €","les deux lots, HAI"]],
+ kv:[["4 000 m²",""],["2 lots",""]],prix:"669 500 €",pu:"HAI, par lot",
+ desc:"Sur un site d'activité aux portes de Troyes, deux bâtiments sont à vendre en l'état : un immeuble de bureaux et un magasin. Une opportunité pour un utilisateur ou un investisseur, dans une zone commerciale en plein développement.",
+ car:["Lot bureaux : 3 000 m² sur 3 niveaux","Lot magasin : 1 000 m² sur 2 niveaux","Lots vendables ensemble ou séparément","Vente en l'état","Zone commerciale en développement"],
+ acc:["A26 et A5 : accès rapide","Agglomération de Troyes","Paris : ~2 h"],
+ cond:"669 500 € HAI par lot, soit 650 000 € net vendeur + 19 500 € HT d'honoraires. 1 236 000 € HAI les deux lots, soit 1 200 000 € net vendeur + 36 000 € HT d'honoraires."},
+{ref:"B13",s:"vendre",cat:"bur",ville:"Bourg-en-Bresse",dep:"01",titre:"Ensemble immobilier de bureaux",sous:"Environ 6 650 m² bâtis sur un terrain d'environ 2,3 ha",m2:6650,
+ tiles:[["≈ 6 650 m²","surface bâtie"],["≈ 2,3 ha","de terrain"],["R+4","avec sous-sol"],["≈ 92 %","de bureaux"]],
+ kv:[["≈ 6 650 m²",""],["≈ 2,3 ha","de terrain"]],prix:"Nous consulter",pu:"",
+ desc:"Ensemble tertiaire de plusieurs bâtiments avec espaces extérieurs aménagés, dans une zone d'activités en mutation proche des grands axes de l'agglomération. Le règlement d'urbanisme de la zone autorise les bureaux et l'industrie.",
+ car:["Surface bâtie : environ 6 650 m²","Terrain d'environ 2,3 ha","Bâtiments en R+4 avec sous-sol","Environ 92 % de bureaux","Ensemble non divisible"],
+ acc:["Centre-ville et gare : quelques minutes","A40 : accès rapide"],
+ cond:"Prix : nous consulter."},
+{ref:"B32",s:"vendre",cat:"dom",ville:"Somme · à 35 km d'Amiens",dep:"80",titre:"Domaine avec château et hébergement de 20 chambres",sous:"1,8 ha de parc · 1 550 m² bâtis · 5 bâtiments",m2:1550,
+ tiles:[["1,8 ha","de parc"],["1 550 m²","bâtis"],["11 pièces","au château"],["20","chambres"]],
+ kv:[["1,8 ha",""],["château","+ 20 chambres"]],prix:"Nous consulter",pu:"",
+ desc:"Domaine composé d'un château de caractère et de plusieurs bâtiments annexes, au cœur d'un parc de 1,8 hectare. Le château compte 11 pièces sur quatre niveaux et accueille aujourd'hui un bar, une bibliothèque, une salle de projection, une salle de réunion, des salles d'activités et un studio d'enregistrement. Un bâtiment d'hébergement de 20 chambres, des services généraux, une laverie-atelier et une infirmerie complètent l'ensemble. Le domaine nécessite environ 150 000 € de travaux. Un site rare pour un projet d'hôtellerie, de séminaires, de tourisme ou d'accueil de groupes.",
+ car:["Château (bât. D) : 11 pièces, sous-sol + 3 niveaux","Hébergement (bât. B) : 20 chambres sur 2 niveaux","Services généraux (bât. A), laverie et atelier (bât. C), infirmerie (bât. E)","Parc de 18 400 m²","Surface bâtie totale : 1 550 m²","Travaux à prévoir : environ 150 000 €","Plans du château et de l'hébergement sur demande"],
+ acc:["Amiens : ~35 km","Gare TGV : ~12 km","Autoroute : ~14 km","Lille : ~100 km · Paris : ~1 h 45"],
+ cond:"Prix : nous consulter. Travaux à prévoir : environ 150 000 €.",
+ extra:["Urbanisme : une fenêtre jusqu'au 1er juin 2027","Un certificat d'urbanisme permet des projets privés (habitat, hôtellerie, commerce) à condition de déposer un permis de construire ou une déclaration préalable avant le 1er juin 2027. Ensuite, le site passe dans une zone réservée aux équipements publics et d'intérêt général."],
+ idees:["Hôtel de charme ou maison d'hôtes","Séminaires et résidences d'entreprise","Tourisme de mémoire (sites de 1916 à proximité)","Accueil de groupes, classes vertes, colonies","Résidence seniors ou établissement médico-social"]},
+{ref:"B01",s:"vendre",cat:"hab",ville:"Brouzet-lès-Alès",dep:"30",titre:"Villa avec fort potentiel",sous:"108 m² · 6 pièces · 4 chambres · terrain de 1 800 m²",m2:108,
+ tiles:[["108 m²","surface habitable"],["1 800 m²","de terrain"],["4","chambres"],["250 000 €","honoraires inclus"]],
+ kv:[["108 m²",""],["1 800 m²","de terrain"]],prix:"250 000 €",pu:"HAI",
+ desc:"Dans un environnement calme et naturel, entre garrigues et chênes verts, villa sur plusieurs niveaux avec un espace de vie (salon, cuisine, salle de bains, chambre), et deux chambres et un dressing à l'étage. Le rez-de-chaussée permet d'aménager un appartement indépendant pour accueillir des proches ou louer.",
+ car:["Surface habitable : 108,76 m²","Terrain : 1 800 m²","6 pièces dont 4 chambres","Climatisation réversible","Possibilité de logement indépendant au RDC","DPE : 140 kWhep/m²/an · GES : 4 kgCO₂/m²/an"],
+ acc:["Secteur d'Alès","Nîmes : moins de 1 h","Montpellier : ~1 h 15"],
+ cond:"250 000 € honoraires inclus (6 %), à la charge de l'acquéreur.",hon:" "},
+{ref:"B16",s:"vendre",cat:"hab",ville:"Pont-d'Hérault",dep:"30",titre:"Maison rénovée au bord de l'Hérault",sous:"38 m² · terrasse avec vue sur la rivière",m2:38,
+ tiles:[["38 m²","surface habitable"],["Terrasse","vue rivière"],["0","travaux à prévoir"],["85 000 €","honoraires inclus"]],
+ kv:[["38 m²",""],["terrasse","vue rivière"]],prix:"85 000 €",pu:"HAI",
+ desc:"Maison indépendante entièrement rénovée au bord de l'Hérault, avec une grande terrasse donnant sur la rivière. Un chemin privatif compris dans la vente descend jusqu'aux berges. Idéale pour un premier achat, une résidence secondaire ou de la location saisonnière.",
+ car:["Pièce de vie de 20 m² avec cuisine équipée","Mezzanine de 5,5 m² · chambre de 8,9 m²","Salle d'eau avec douche, vasque et WC","Climatisation réversible · tout-à-l'égout","Chemin privatif jusqu'à la rivière","DPE non requis (moins de 50 m²)"],
+ acc:["Vallée de l'Hérault, au cœur des Cévennes","Montpellier : ~1 h 15"],
+ cond:"85 000 € honoraires inclus, soit 80 000 € net vendeur + 5 000 € TTC d'honoraires (6,25 %), à la charge de l'acquéreur.",hon:" "}
+,{ref:"B06",s:"louer",cat:"ent",ville:"La Courneuve · aux portes de Paris",dep:"93",titre:"Halle d'activité en brique",sous:"4 400 m² développés · site sécurisé 7j/7",m2:4400,
+ tiles:[["4 400 m²","surface développée"],["36 666 €","loyer mensuel HT/HC"],["A86","sortie immédiate"],["7j/7","site sécurisé"]],
+ kv:[["4 400 m²",""],["2","quais"]],prix:"36 666 €/mois",pu:"HT/HC",
+ desc:"En Seine-Saint-Denis, vaste ensemble de bâtiments en brique avec une grande halle très haute, lumineuse grâce à ses verrières. Idéal pour une activité, du stockage, de la logistique urbaine ou du commerce de gros, aux portes de Paris.",
+ car:["Surface : 4 400 m² développés","De plain-pied, avec mezzanine","Grande halle sous verrières","2 quais de chargement","Non divisible","Site sécurisé 7j/7, visites sur rendez-vous"],
+ acc:["Sortie immédiate A86, proche périphérique","Métro 7, RER B et tram T1 à proximité"],
+ cond:"Loyer : 36 666 € par mois HT/HC, soit environ 100 €/m²/an."},
+{ref:"B18",s:"louer",cat:"bur",ville:"Pantin",dep:"93",titre:"Plateaux de bureaux rénovés",sous:"3 062 m² · non divisible · 92 places de parking comprises",m2:3062,
+ tiles:[["3 062 m²","disponibles"],["2 × 1 531 m²","plateaux R+2 et R+3"],["92","places de parking"],["250 €/m²/an","HT/HC"]],
+ kv:[["3 062 m²",""],["92","parkings"]],prix:"250 €/m²/an",pu:"HT/HC",
+ desc:"Deux plateaux de bureaux dans un immeuble entièrement rénové (rien à prévoir), dans un quartier calme et très bien desservi. L'immeuble est déjà occupé par un grand groupe, avec réfectoire et cuisine en parties communes.",
+ car:["R+2 : 1 531 m² · R+3 : 1 531 m² · HSP 2,50 m","Location de l'ensemble (non divisible)","Disponible immédiatement","Climatisation réversible dans tous les bureaux","Fibre optique, double vitrage","92 places en sous-sol comprises dans le loyer"],
+ acc:["Métro, RER et tram à proximité","Périphérique : accès rapide"],
+ cond:"Loyer : 250 €/m²/an HT/HC pour la totalité, 92 places de parking comprises. Disponible immédiatement."},
+{ref:"B19",s:"louer",cat:"bur",ville:"Gennevilliers",dep:"92",titre:"Bureaux & salles de formation",sous:"3 015 m² non divisibles · bâtiment indépendant · 80 parkings",m2:3015,
+ tiles:[["3 015 m²","non divisible"],["80","places de parking"],["4,23 m","HSP max. (R+2)"],["175 €/m²/an","HT/HC"]],
+ kv:[["3 015 m²",""],["80","parkings"]],prix:"175 €/m²/an",pu:"HT/HC",
+ desc:"Bâtiment indépendant avec entrée et accès séparés, au sein d'un parc d'activités. Les salles de formation sont prêtes et utilisables en l'état ; une cafétéria ou une salle de repos peut être aménagée. Disponible immédiatement.",
+ car:["RDC bas : 1 026 m² (formation) · RDC haut : 671 m² (bureaux)","R+1 : 732 m² · R+2 : 586 m² (formation, HSP 4,23 m)","Non divisible, disponible immédiatement","Climatisation réversible pièce par pièce","Double vitrage, fibre, ascenseur, accès PMR","Vidéosurveillance, alarme, sécurité incendie aux normes"],
+ acc:["A86 et A15 : accès rapide","Bus, tram et RER à proximité"],
+ cond:"Loyer : 175 €/m²/an HT/HC. Disponible immédiatement."},
+{ref:"B20",s:"louer",cat:"bur",ville:"Issoudun",dep:"36",titre:"Bureaux & archives",sous:"857 m² sur un terrain d'environ 1 ha",m2:857,
+ tiles:[["857 m²","disponibles"],["507 m²","de bureaux"],["≈ 1 ha","de terrain"],["Nous consulter","loyer"]],
+ kv:[["857 m²",""],["507 m²","de bureaux"]],prix:"Nous consulter",pu:"",
+ desc:"Bâtiment de bureaux sur trois niveaux, avec archives en sous-sol, sur un grand terrain d'un hectare. Commerces et services à proximité, zones d'activités autour, et accès rapide aux pôles économiques de Châteauroux, Vierzon et Bourges.",
+ car:["Sous-sol : 224 m² (dont 160 m² d'archives) · HSP 2,50 m","RDC : 328 m² (dont 254 m² de bureaux)","1er étage : 305 m² (dont 253 m² de bureaux) · HSP 2,73 m","Total : 857 m² (507 m² bureaux, 160 m² archives)"],
+ acc:["Gare et centre-ville : à proximité","Châteauroux et Bourges : ~30 min"],
+ cond:"Loyer : nous consulter."},
+{ref:"B23",s:"vendre",cat:"hab",ville:"Villers-Semeuse · Charleville",dep:"08",titre:"Immeuble de rapport · 9 logements",sous:"Un immeuble, 9 appartements",m2:0,
+ tiles:[["9 logements","immeuble de rapport"],["Gare","à proximité"],["A34 / N43","accès rapide"],["257 500 €","prix HAI"]],
+ kv:[["9","logements"],["immeuble","de rapport"]],prix:"257 500 €",pu:"HAI",
+ desc:"Immeuble de rapport de 9 logements, à proximité de la gare et des grands axes, dans l'agglomération de Charleville-Mézières. Un actif pour un investisseur à la recherche de revenus locatifs.",
+ car:["Immeuble de 9 appartements","Surfaces détaillées par logement sur demande","Loyers et situation locative sur demande","DPE et diagnostics sur demande"],
+ acc:["Gare et bus : à proximité","A34 et N43 : accès rapide","Reims : ~1 h"],
+ cond:"257 500 € HAI, soit 250 000 € net vendeur + 7 500 € HT d'honoraires."},
+{ref:"B22",s:"vendre",cat:"hab",ville:"Alfortville",dep:"94",titre:"Maison familiale à rénover",sous:"100 m² habitables sur environ 324 m² de terrain",m2:100,
+ tiles:[["100 m²","surface habitable"],["≈ 324 m²","de terrain"],["R+1","+ sous-sol"],["458 350 €","prix HAI"]],
+ kv:[["100 m²",""],["≈ 324 m²","de terrain"]],prix:"458 350 €",pu:"HAI",
+ desc:"Maison individuelle familiale dans une rue pavillonnaire calme, proche des transports, des écoles et des commerces. Une maison à rénover, idéale pour un acquéreur qui veut l'adapter à son goût ou pour un investisseur en rénovation énergétique.",
+ car:["Surface habitable : 100 m²","Terrain : environ 324 m²","R+1 avec sous-sol","Rénovation à prévoir (énergie, électricité, gaz)","DPE : G (527 kWh/m²/an) · GES : G (117 kg CO₂/m²/an)","Zone inondable (PPRI, zone bleue) : voir Géorisques"],
+ acc:["RER D accessible à pied","Écoles et commerces à proximité"],
+ cond:"458 350 € HAI, soit 445 000 € net vendeur + 13 350 € HT d'honoraires. Informations sur les risques : www.georisques.gouv.fr."},
+{ref:"B21",s:"vendre",cat:"park",ville:"Paris 18e",dep:"75",titre:"Ensemble de 50 parkings",sous:"Spécial investisseur · lot non divisible",m2:0,
+ tiles:[["50","places (non divisible)"],["R-3","niveau complet"],["Paris 18e","quartier résidentiel"],["978 500 €","prix HAI"]],
+ kv:[["50","places"],["niveau","complet"]],prix:"978 500 €",pu:"HAI",
+ desc:"Un ensemble très recherché de 50 places de stationnement dans un quartier résidentiel du 18e arrondissement : la totalité d'un niveau de sous-sol (parkings et locaux techniques). Possibilité de boxer certaines places, travaux à la charge de l'acquéreur.",
+ car:["50 places, vendues en bloc uniquement","Niveau complet (parkings + locaux techniques)","Boxes fermés réalisables (≈ 180 €/mois par box)","2 entrées, une nouvelle entrée prévue","Accès par ascenseur","Charges de copropriété et taxe foncière : 5 862 €/an"],
+ acc:["Paris 18e arrondissement","Métro et bus à proximité"],
+ cond:"978 500 € HAI, soit 950 000 € net vendeur + 28 500 € HT d'honoraires. Prix net vendeur non négociable. Livraison sous un an."}
+
+];
+const HON={louer:"Honoraires de location : nous consulter.",vendre:"Honoraires : 3 % HT du prix de vente, à la charge de l'acquéreur.",both:"Honoraires de location : nous consulter. Vente : 3 % HT du prix, à la charge de l'acquéreur."};
+const GAL={};
+const CATS={ter:"Terrains",ent:"Entrepôts & activité",bur:"Bureaux",hab:"Habitation & immeubles",dom:"Domaines & châteaux",park:"Parkings"};
+const $=s=>document.querySelector(s);
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const SH={ent:`<g fill="none" stroke="#b08d4a" stroke-width="1.2" opacity=".55"><path d="M60 300 L60 190 L220 130 L380 190 L380 300 Z"/><path d="M380 300 L380 210 L580 210 L580 300"/><path d="M110 300v-60h50v60M200 300v-60h50v60M290 300v-60h50v60"/><path d="M420 300v-50h40v50M500 300v-50h40v50"/><path d="M30 300H610"/></g>`,ter:`<g fill="none" stroke="#b08d4a" stroke-width="1.2" opacity=".55"><path d="M90 290 L250 170 L560 200 L470 310 Z"/><path d="M250 170 L330 300M405 186 L400 306" stroke-dasharray="6 6"/><path d="M40 330 Q320 270 620 320"/><circle cx="250" cy="170" r="4"/><circle cx="560" cy="200" r="4"/><circle cx="90" cy="290" r="4"/><circle cx="470" cy="310" r="4"/></g>`,bur:`<g fill="none" stroke="#b08d4a" stroke-width="1.2" opacity=".55"><path d="M200 300V120h160v180M360 300V170h120v130M30 300H610"/><path d="M225 145h110M225 175h110M225 205h110M225 235h110M225 265h110M385 195h70M385 225h70M385 255h70"/></g>`,hab:`<g fill="none" stroke="#b08d4a" stroke-width="1.2" opacity=".55"><path d="M200 300V200l120-80 120 80v100M30 300H610"/><path d="M290 300v-60h60v60M230 220h40v35h-40zM370 220h40v35h-40z"/></g>`};
+SH.park=SH.bur;SH.dom=SH.hab;
+const cover=b=>`<svg viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(b.titre)}"><rect width="640" height="400" fill="#16181f"/>${SH[b.cat]||SH.ent}<text x="600" y="62" text-anchor="end" fill="#d4b373" font-family="Inter,sans-serif" font-size="20">Réf. ${b.ref}</text><text x="40" y="320" fill="#efe9dc" font-family="Lora,serif" font-size="40" font-weight="600">${esc(b.tiles[0][0])}</text><text x="40" y="362" fill="#d4b373" font-family="Inter,sans-serif" font-size="19" letter-spacing="1">PHOTOS SUR DEMANDE</text></svg>`;
+const v3=(b,big)=>`<div class="v3"><canvas data-v3="${b.ref}" aria-label="Vue 3D d'illustration : ${esc(b.titre)}"></canvas><span class="pd">Photos sur demande</span></div>`;
+const pic=b=>V3.S[b.ref]?v3(b):IMG[b.ref]?`<img src="${IMG[b.ref]}" alt="${esc(b.titre)}, ${esc(b.ville)}" loading="lazy">`:cover(b);
+const cd=()=>{const j=Math.ceil((new Date(2027,5,1)-new Date())/864e5);return j>0?"Plus que "+j+" jours":"Échéance passée"};
+const lab=b=>b.s==="louer"?"À louer":b.s==="both"?"À louer ou à vendre":"À vendre";
+let F="all",C="all";
+function render(){
+  const q=$("#q").value.trim().toLowerCase(),so=$("#sort").value;
+  let L=B.filter(b=>(F==="all"||b.s===F||b.s==="both")&&(C==="all"||b.cat===C)&&(!q||(b.ville+" "+b.dep+" "+b.titre+" "+b.ref).toLowerCase().includes(q)));
+  if(so==="ref")L.sort((a,b)=>+a.ref.slice(1)-+b.ref.slice(1));if(so==="up")L.sort((a,b)=>a.m2-b.m2);if(so==="down")L.sort((a,b)=>b.m2-a.m2);
+  $("#grid").innerHTML=L.length?L.map((b,i)=>`<button class="card rv" style="transition-delay:${Math.min(i,6)*60}ms" data-r="${b.ref}" type="button">
+   <div class="ph">${pic(b)}<div class="tag"><span class="s">${lab(b)}</span><span>${CATS[b.cat]}</span></div></div>
+   <div class="bd"><div class="loc">${esc(b.ville)} (${b.dep}) · Réf. ${b.ref}</div><h3>${esc(b.titre)}</h3>
+   <div class="kv">${b.kv.map(k=>`<span><b>${esc(k[0])}</b> ${esc(k[1])}</span>`).join("")}</div>
+   <div class="pr"><b>${esc(b.prix)}</b><span>${esc(b.pu)}</span></div></div></button>`).join(""):`<div class="empty">Aucun bien ne correspond. Décrivez votre besoin dans le formulaire : nous cherchons aussi hors catalogue.</div>`;
+  watch();stills();
+}
+const vio=new IntersectionObserver(es=>es.forEach(en=>{if(!en.isIntersecting)return;const c=en.target;vio.unobserve(c);V3.Viewer(c,V3.S[c.dataset.v3](),{still:true})}),{rootMargin:"200px"});
+function stills(){document.querySelectorAll("canvas[data-v3]:not([data-on])").forEach(c=>{c.dataset.on=1;vio.observe(c)})}
+let VW=null;
+function open(ref){
+  const b=B.find(x=>x.ref===ref);if(!b)return;const d=$("#dlg");
+  d.innerHTML=`<div class="mh"><div><div class="loc">Réf. ${b.ref} · ${lab(b)} · ${esc(b.ville)} (${b.dep})</div><h2 id="dt">${esc(b.titre)}</h2><div class="sub">${esc(b.sous)}</div></div><button class="x" type="button" aria-label="Fermer">×</button></div>
+  <div class="mimg">${V3.S[b.ref]?`<div class="v3 live"><canvas id="v3c" aria-label="Vue 3D à 360° : ${esc(b.titre)}"></canvas><span class="pb">Photos sur demande</span><span class="hint">Glissez pour tourner</span><button type="button" class="pl" aria-label="Pause ou lecture">❚❚</button>${V3.IV[b.ref]||V3.TER[b.ref]?`<div class="zm"><button type="button" data-z="1.25" aria-label="Zoomer">+</button><button type="button" data-z=".8" aria-label="Dézoomer">−</button></div>`:""}</div>`:GAL[b.ref]?`<div class="gal" tabindex="0" aria-label="Photos">${GAL[b.ref].map(k=>`<img src="${IMG[k]}" alt="${esc(b.titre)}">`).join("")}</div><div class="gnav"><button type="button" data-g="-1" aria-label="Photo précédente">‹</button><button type="button" data-g="1" aria-label="Photo suivante">›</button></div>`:pic(b)}</div>
+  ${V3.IV[b.ref]?`<div class="v3bar"><div class="seg2" role="group" aria-label="Vue">${V3.IV[b.ref].map((m,i)=>`<button type="button" data-m="${i}" aria-pressed="${i===0}">${m.l}</button>`).join("")}</div><div class="lv" hidden></div><p class="lvt" aria-live="polite">${esc(V3.IV[b.ref][0].t)}</p></div>`:""}
+  ${V3.TER[b.ref]?`<div class="v3bar">${V3.TER[b.ref].fixed?"":`<label class="rng">Niveaux construits : <b id="tn">${V3.TER[b.ref].n}</b><input id="tr" type="range" min="${V3.TER[b.ref].nmin}" max="${V3.TER[b.ref].nmax}" value="${V3.TER[b.ref].n}" aria-label="Nombre de niveaux"></label>`}<p class="lvt" id="tt"></p></div>`:""}
+  ${V3.TER[b.ref]?`<p class="v3n">Visuel 3D d'illustration, non contractuel : forme de parcelle générique, volume calculé avec des hypothèses d'emprise et de hauteur à confirmer avec le PLU.</p>`:V3.S[b.ref]?`<p class="v3n">Visuel 3D d'illustration aux couleurs des façades, non contractuel : il ne reproduit ni la forme exacte ni l'implantation des bâtiments.${V3.IV[b.ref]?" Intérieurs : agencement et mobilier indicatifs, établis d'après les plans et les surfaces du dossier ; plans complets sur demande.":""}</p>`:""}
+  <div class="tiles">${b.tiles.map(t=>`<div><b>${esc(t[0])}</b>${esc(t[1])}</div>`).join("")}</div>
+  <div class="mb"><div><h3>Le bien</h3><p>${esc(b.desc)}</p><h3>Caractéristiques</h3><ul>${b.car.map(c=>`<li>${esc(c)}</li>`).join("")}</ul>${b.idees?`<h3>Idées de projets</h3><ul>${b.idees.map(c=>`<li>${esc(c)}</li>`).join("")}</ul>`:""}</div>
+  <div><h3>Accès</h3><ul>${b.acc.map(c=>`<li>${esc(c)}</li>`).join("")}</ul>
+  ${b.extra?`<div class="urb"><b>${esc(b.extra[0])}</b><span class="cd">${cd()}</span><p>${esc(b.extra[1])}</p></div>`:""}<div class="price"><b>${esc(b.prix)} ${esc(b.pu)}</b>${esc(b.cond)} ${b.hon?"":HON[b.s]}</div>
+  <a class="btn" href="#contact" data-ref="${b.ref}" style="width:100%">Demander les photos ou une visite</a></div></div>
+  ${V3.TER[b.ref]?`<section class="calc"><h3>Calculateur investisseur</h3><p class="sm">Toutes les valeurs sont modifiables. Les hypothèses par défaut sont indicatives (frais d'acquisition 8 % ; frais annexes : taxes, honoraires, financement, commercialisation) : nous vous transmettons les données précises sur demande.</p>
+  <div class="cg"><label>Prix d'acquisition (€)<input id="c_p" inputmode="numeric"></label><label>Surface de plancher (m²)<input id="c_s" inputmode="numeric"></label><label>Coût de construction (€/m²)<input id="c_c" inputmode="numeric"></label><label>${V3.TER[b.ref].mode==="loc"?"Loyer de marché (€/m²/an)":"Prix de revente (€/m² habitable)"}<input id="c_r" inputmode="numeric"></label></div>
+  <div class="co" aria-live="polite"></div></section>`:""}`;
+  d.querySelector(".x").onclick=()=>d.close();
+  const T=V3.TER[b.ref];let sDirty=false;
+  const num=v=>+String(v).replace(/[^0-9]/g,"")||0,fe=n=>Math.round(n).toLocaleString("fr-FR").replace(/\u202f|\u00a0/g," ");
+  const sdp=n=>T.fixed||Math.round(T.m2*T.ces*n);
+  const calc=()=>{const P=num(d.querySelector("#c_p").value),Sp=num(d.querySelector("#c_s").value),C=num(d.querySelector("#c_c").value),R=num(d.querySelector("#c_r").value),o=d.querySelector(".co");
+   if(!Sp){o.innerHTML="";return}const terrain=P*1.08,bat=Sp*C;
+   if(T.mode==="loc"){const cout=terrain+bat*1.1,loyer=Sp*R;
+    o.innerHTML=`<div><span>Charge foncière</span><b>${P?fe(P/Sp)+" €/m²":"—"}</b></div><div><span>Coût total (terrain + 8 %, construction + 10 %)</span><b>${fe(cout)} €</b></div><div><span>Loyer annuel potentiel</span><b>${R?fe(loyer)+" €/an":"—"}</b></div><div><span>Rendement brut estimé</span><b>${R&&P?(loyer/cout*100).toFixed(1).replace(".",",")+" %":"—"}</b></div>`;return}
+   const ca=Sp*.85*R,annexes=ca*.2,cout=terrain+bat+annexes,mg=ca-cout;
+   o.innerHTML=`<div><span>Charge foncière</span><b>${P?fe(P/Sp)+" €/m²":"—"}</b></div><div><span>Chiffre d'affaires (85 % de surface vendable)</span><b>${R?fe(ca)+" €":"—"}</b></div><div><span>Coût total (terrain + 8 %, construction, 20 % de frais annexes)</span><b>${fe(cout)} €</b></div><div class="${mg<0?"neg":""}"><span>Marge estimée</span><b>${R&&P?fe(mg)+" € · "+(mg/ca*100).toFixed(1).replace(".",",")+" %":"—"}</b></div>`};
+  const terInfo=n=>{const t2=d.querySelector("#tt");if(!t2)return;t2.textContent=T.fixed?`${T.usage} : ${fe(T.fixed)} m² de surface de plancher (3 × 320 m²), dans le respect du CES de 20 %. Pour se représenter la parcelle : ${V3.echelle(T.m2)}.`:`${T.usage} : emprise au sol ≈ ${fe(T.m2*T.ces)} m² (${Math.round(T.ces*100)} % du terrain) sur ${n} ${T.lvl}${n>1?"x":""}, soit ≈ ${fe(sdp(n))} m² de surface de plancher. Pour se représenter le terrain : ${V3.echelle(T.m2)}.`;
+   if(!sDirty){d.querySelector("#c_s").value=fe(sdp(n));calc()}};
+  if(T){d.querySelector("#c_p").value=num(b.prix)?fe(num(b.prix)):"";d.querySelector("#c_c").value=fe(T.cout);d.querySelector("#c_r").value=T.rev?fe(T.rev):"";
+   d.querySelectorAll(".calc input").forEach(i=>i.addEventListener("input",()=>{if(i.id==="c_s")sDirty=true;calc()}));terInfo(T.n)}
+  const c3=d.querySelector("#v3c");
+  if(c3){VW=V3.Viewer(c3,V3.S[b.ref](),{labels:!!(V3.IV[b.ref]||V3.TER[b.ref]),zoom:b.ref==="B32"?1.55*(innerWidth<600?.85:1):1});d.querySelector(".pl").onclick=e=>{e.currentTarget.textContent=VW.toggle()?"❚❚":"▶"};
+   const tr=d.querySelector("#tr");if(tr)tr.oninput=()=>{const n=+tr.value;d.querySelector("#tn").textContent=n;VW.set(V3.S[b.ref](n));terInfo(n)};
+   d.querySelectorAll("[data-z]").forEach(z=>z.onclick=()=>VW.zoom(+z.dataset.z));
+   const pl=d.querySelector(".pl"),IVc=V3.IV[b.ref],lv=d.querySelector(".lv"),lvt=d.querySelector(".lvt"),sm=innerWidth<600?.82:1;let M=0;
+   const show=i=>{const m=IVc[M].lv[i];VW.set(m[2](),{zoom:m[3]*sm,tilt:m[4],sel:null,ang:m[5]??0.5,auto:false,fit:m[5]===0});if(pl)pl.textContent="▶";lv.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.l==i));lvt.textContent=m[1]};
+   if(IVc)d.querySelectorAll("[data-m]").forEach(b2=>b2.onclick=()=>{M=+b2.dataset.m;const m=IVc[M];d.querySelectorAll("[data-m]").forEach(x=>x.setAttribute("aria-pressed",x===b2));
+    if(m.ext){lv.hidden=true;VW.set(V3.S[b.ref](),{zoom:(m.z||1)*sm,tilt:.62,sel:null,auto:true});if(pl)pl.textContent="❚❚";lvt.textContent=m.t;return}
+    lv.innerHTML=m.lv.map((x,i)=>`<button type="button" data-l="${i}">${x[0]}</button>`).join("");lv.hidden=false;
+    lv.querySelectorAll("button").forEach(x=>x.onclick=()=>show(+x.dataset.l));show(m.d)})}
+  d.querySelectorAll("[data-g]").forEach(g=>g.onclick=()=>{const s=d.querySelector(".gal");s.scrollBy({left:s.clientWidth*+g.dataset.g,behavior:"smooth"})});
+  if(d.showModal)d.showModal();else d.setAttribute("open","");
+}
+$("#grid").addEventListener("click",e=>{const c=e.target.closest(".card");if(c)open(c.dataset.r)});
+$("#dlg").addEventListener("click",e=>{if(e.target.id==="dlg")e.target.close()});
+document.querySelectorAll(".seg button").forEach(btn=>btn.onclick=()=>{F=btn.dataset.f;document.querySelectorAll(".seg button").forEach(x=>x.setAttribute("aria-pressed",x===btn));render()});
+$("#cat").onchange=()=>{C=$("#cat").value;render()};
+$("#q").oninput=render;$("#sort").onchange=render;
+// formulaire
+$("#ref").innerHTML=`<option value="">Aucun en particulier</option>`+B.map(b=>`<option value="${b.ref}">${b.ref} · ${esc(b.titre)} · ${esc(b.ville)}</option>`).join("")+`<option value="Off-market">Dossiers off-market</option>`;
+document.addEventListener("click",e=>{const a=e.target.closest("[data-ref]");if(!a)return;$("#ref").value=a.dataset.ref;const d=$("#dlg");if(d.open)d.close();
+  const b=B.find(x=>x.ref===a.dataset.ref);if(b){document.querySelector(`.chips input[value="${b.s==="louer"?"Louer un local":"Acheter un bien"}"]`).checked=true}});
+let TXT="";
+$("#f").addEventListener("submit",e=>{e.preventDefault();
+  const v=id=>$("#"+id).value.trim(),err=$("#err");
+  if(!v("nom")){err.textContent="Indiquez votre nom.";$("#nom").focus();return}
+  if(!v("tel")&&!v("mail")){err.textContent="Laissez un téléphone ou un e-mail pour qu'on vous rappelle.";$("#tel").focus();return}
+  err.textContent="";
+  const p=document.querySelector(".chips input:checked").value,r=v("ref");
+  TXT=["Bonjour PR'IMMO,","","Projet : "+p,r?"Bien : "+r:"",v("msg")?"\n"+v("msg"):"","","Nom : "+v("nom"),v("soc")?"Société : "+v("soc"):"",v("tel")?"Téléphone : "+v("tel"):"",v("mail")?"E-mail : "+v("mail"):""].filter((x,i,a)=>x!==""||a[i-1]!=="").join("\n");
+  $("#wa").href="https://wa.me/33764108405?text="+encodeURIComponent(TXT);
+  $("#em").href="mailto:primmo.mtp@gmail.com?subject="+encodeURIComponent("Demande "+(r||p)+" · "+v("nom"))+"&body="+encodeURIComponent(TXT);
+  $("#out").classList.add("on");
+});
+$("#cp").onclick=async()=>{try{await navigator.clipboard.writeText(TXT);$("#cp").textContent="Message copié"}catch(_){$("#cp").textContent="Copie impossible : sélectionnez le texte"}};
+// animations
+const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add("in");io.unobserve(en.target)}}),{threshold:.12});
+function watch(){document.querySelectorAll(".rv:not(.in)").forEach(el=>io.observe(el))}
+const fmt=n=>n.toLocaleString("fr-FR").replace(/ | /g," ");
+const cio=new IntersectionObserver(es=>es.forEach(en=>{if(!en.isIntersecting)return;const el=en.target,end=+el.dataset.count,pre=el.dataset.pre||"",suf=el.dataset.suf||"",t0=performance.now();cio.unobserve(el);
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  const step=t=>{const k=Math.min(1,(t-t0)/1400),e=1-Math.pow(1-k,3);el.textContent=pre+fmt(Math.round(end*e))+suf;if(k<1)requestAnimationFrame(step)};requestAnimationFrame(step)}),{threshold:.5});
+const nd=new Set(B.map(b=>b.dep)).size;document.querySelectorAll("[data-count=NB]").forEach(e=>{e.dataset.count=B.length;e.textContent=B.length});document.querySelectorAll("[data-count=ND]").forEach(e=>{e.dataset.count=nd;e.textContent=nd});
+document.querySelectorAll("[data-cov]").forEach(e=>{const b=B.find(x=>x.ref===e.dataset.cov);if(b)e.innerHTML=pic(b)});stills();
+document.querySelectorAll("[data-count]").forEach(el=>cio.observe(el));
+render();
+}
+</script>
+</body>
+</html>
